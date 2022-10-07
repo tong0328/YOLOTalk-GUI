@@ -1,0 +1,353 @@
+<html>
+    <style>
+        /*    ______________ 字體設定 ______________   */
+        h1,h2,h3,h4,h5,h6{
+            font-family: 'Noto Sans TC', sans-serif;
+            color: rgb(116 109 109);
+        }
+
+        p,a,input,label,textarea,span,ul,li{
+            font-family: 'Open Sans TC', sans-serif;
+        }
+        /*    ______________ 照片設定  不要爆掉 ______________   */
+        img{
+            max-width: 100%;
+        }
+        /*    ______________ 按鈕設定 ______________   */
+        .btn{
+            background-color: #b1d3f5;
+            color: rgb(116 109 109);
+            font-size: 20px;
+            margin-top: -3px;
+            text-align: right;
+        }
+
+        /*    ______________ 大看板上的選單 ______________   */
+        nav img{
+            width: 200px;
+        }
+        header li{
+            margin: 0 15px;
+            font-weight: bold;
+            font-size: 22px;
+        }
+        /*    ______________ 大看板 ______________   */
+        #intro .jumbotron{
+            height:84vh;
+            padding: 50px 500px; 
+        }
+        
+        #intro .container-md {
+            position: relative;     
+            top: 20%;
+            transform: translateY(-50%);
+            padding-top: 10px ;
+            padding-bottom: 1px ;
+            display: none;
+            border-style: solid;
+            border-color: rgb(116, 109, 109);
+            border-radius: 20px;
+            border-width: 5px;
+            background-color: #b1d3f5;
+        }
+        
+        .timebox{
+            background:white;
+            font-size:20px;
+            width:240px; 
+            height:25px;
+            padding:15px;
+            margin:0 auto; 
+            border:1px solid; 
+            border-color:black; 
+ 
+        }
+
+    </style>
+<head>
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500&family=Open+Sans:ital,wght@1,600&display=swap" rel="stylesheet">
+  
+    <!-- <script src="https://kit.fontawesome.com/8fe09599eb.js" crossorigin="anonymous"></script> -->
+    <script src="https://code.jquery.com/jquery-3.4.1.js"integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="crossorigin="anonymous"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script> -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <title>YOLOTalk Schedule</title>
+</head>
+<script>
+    
+    var group_set = new Set()
+    var del_id = ""
+    
+    $(document).ready(function(){
+        // Nav 導向畫圖頁面
+        $("a#replot_fence").click(function(){
+            fence = this.text
+            FormName = "Form_"+fence
+            document.getElementById(FormName).submit()
+        });
+        check_th()
+        check_tr()
+    });
+    
+
+    //  Schedule time Modal
+    function Add_Time_Modal(th){
+        var title = document.getElementById("title")
+        var label_start = document.getElementById("label_start_time")
+        var label_end = document.getElementById("label_end_time")
+        
+        title.innerText = "Add  "+th.id.split(" ")[2]+" Schedule: " + th.id.split(" ")[0] + " " + th.id.split(" ")[1]
+        label_start.innerText = th.id.split(" ")[2] + " start time : "
+        label_end.innerText   = th.id.split(" ")[2] + " end time : "
+        $("#Add_Time_Modal").modal()
+    }
+            
+
+    function check_th(){
+        var Fence = document.getElementsByClassName("Fence")
+        var tableRef = document.getElementById('schudule_table').getElementsByTagName('tbody')[0];
+        var rows = tableRef.rows
+        var stop_rows = rows.length
+
+        for (var i=0; i<rows.length; i++) {
+            if (i>stop_rows){break}
+
+            old_id = rows[i].cells[1].id
+            alias = old_id.split(" ")[0]
+            fence = old_id.split(" ")[1]
+            order = Number(old_id.split(" ")[2]) + 1
+            mode  = old_id.split(" ")[3]
+            new_id= alias + " " + fence + " " + order + " " + mode
+
+            if (rows[i].cells.length != 4){
+                var x = rows[i].insertCell(0)
+                x.innerHTML = "<td></td>" 
+            }    
+        }
+    }
+
+
+    function check_tr(){
+
+        var tableRef = document.getElementById('schudule_table').getElementsByTagName('tbody')[0];
+        var rows = tableRef.rows
+
+        for (var i=0; i<rows.length; i++) {
+
+            old_id = rows[i].cells[1].id 
+            alias = old_id.split(" ")[0]
+            fence = old_id.split(" ")[1]
+            order = Number(old_id.split(" ")[2]) + 1
+            mode  = old_id.split(" ")[3]
+            new_id= alias + " " + fence + " " + order + " " + mode
+
+            if(  (rows[i].cells[1].innerText  != "--:--") & (rows[i].cells[2].innerText  != "--:--")){
+                
+                if ( (i ==rows.length-1) || rows[i+1].cells[0].innerText != "") {
+
+                    var newRow = tableRef.insertRow(i+1);
+                    newRow.innerHTML = "<tr> <td></td> <td id='" + new_id +" strat_time' class='start_time' onclick='Add_Time_Modal(this)' style='font-size:30px'>--:--</td> <td id='" + new_id +" end_time' class='end_time' onclick='Add_Time_Modal(this)' style='font-size:30px'>--:--</td><td><img src='static/del.png'  id='"+ new_id +"' onclick='del_Modal(this)'  height='50px'></img> </td><tr>";
+                }
+            }
+        }
+    }   
+    
+
+    function edit_confirm(){
+        
+        var title = document.getElementById("title").innerText
+        var start_time = document.getElementById("start_time").value
+        var end_time   = document.getElementById("end_time").value
+
+        $.post("http://panettone.iottalk.tw:10328/schedule",   // url
+            {   "URL":"Edit_time",
+                "alias": title.split(" ")[3],
+                "FenceName":title.split(" ")[4],
+                "Order":title.split(" ")[1],
+                "start_time":start_time,
+                "end_time":end_time
+            });
+            alert(title.split(" ")[3]+title.split(" ")[4]+title.split(" ")[1])
+            setTimeout(function(){ location.reload() }, 500);
+    };
+    
+
+    function del_Modal(fencename) {
+        var text = document.getElementById('text')
+        del_id = String(fencename.id)
+        text.innerText = "確定要刪除 : " + fencename.id + " 的排程 ? "
+        $('#Del_Schedule_Modal').modal() 
+    }
+    
+
+    function del_confirm(){
+        $.post("http://panettone.iottalk.tw:10328/schedule",   // url
+            {   "URL":"Delete_Schedule",
+                "alias": del_id.split(" ")[0],
+                "FenceName":del_id.split(" ")[1],
+                "Order":del_id.split(" ")[2]
+            });
+        setTimeout(function(){location.reload()}, 500);
+    }
+
+    
+
+</script>
+<body>
+<!-- __________________________________________ 上方列表 __________________________________________   -->
+        <header>
+            <div class="Container">
+                <nav class="navbar navbar-expand-lg navbar-light ">
+                    <a class="navbar-brand" href="#">
+                        <img src="static\logo.png">
+                    </a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                  Fence
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item"  href="\" >Home</a>
+                                    <form></form>
+                                    {% for name in navs %}
+                                        <a class="dropdown-item" id="replot_fence"  >{{ name }}</a>
+
+                                    <!-- 用來重新導向舊的畫圖頁面，因POST無法啟動render_template -->
+                                        <form method="post" id="Form_{{name}}" >
+                                            <input type="hidden" name="area" value="{{ name }}">
+                                            <input type="hidden" name="URL" value="REPLOT">
+                                        </form>
+                                    <!-- 用來重新導向舊的畫圖頁面，因POST無法啟動render_template -->
+
+                                    {% endfor %}
+                                    <a class="dropdown-item" onclick="customizeWindowEvent()" >Add new rtsp</a>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="\management">Management</a>
+                            </li>
+                             
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                  Schedule
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+                                    <a class="dropdown-item"  href="\schedule">Fence</a> <form></form>
+                                    <a class="dropdown-item"  >Camera</a>  <form></form>
+                                    <a class="dropdown-item"  >Group</a>  <form></form>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link " href="\streaming"  >Video</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link " href="\training"  >Training(尚未完成)</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </header>  
+    <!-- __________________________________________ 大看板(表格) __________________________________________   -->
+    <section id="intro">
+        <div class="jumbotron" >
+            
+            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+              <option selected>以Fence、Group、Alias分類 (尚未完成)</option>
+              <option value="1">Fence</option>
+              <option value="2">Group</option>
+              <option value="3">Alias</option>
+            </select>
+            </>
+            <table id="schudule_table"  class="table table-dark" data-url="static/camera_info.json" data-height="299">
+                <thead>
+                  <tr>
+                    <th scope="col" data-field="Fence">Fence</th>
+                    <th scope="col" data-field="Start_time">Start time</th>
+                    <th scope="col" data-field="End_time">End time</th>
+                    <th scope="col" data-field="Delete">Delete</th>
+                  </tr>
+                </thead>
+                <tbody >
+                    {% for item in items %}
+                        {% for key in item.fence.keys() %}   
+                    <tr>
+                        <td id="{{item.alias}} {{key}} Name" class="Fence" style="font-size:20px">{{item.alias}}  ( {{key}} )</td>
+                        
+                        {% for Schedule_key in item.fence[key].Schedule.keys() %}
+                        <td id="{{item.alias}} {{key}} {{Schedule_key}} strat_time"  class="strat_time" onclick="Add_Time_Modal(this)" style="font-size:30px">{{item.fence[key].Schedule[Schedule_key].Start_time}}</td> 
+                        <td id="{{item.alias}} {{key}} {{Schedule_key}} end_time"    class="end_time"   onclick="Add_Time_Modal(this)" style="font-size:30px">{{item.fence[key].Schedule[Schedule_key].End_time}}</td> 
+                        <td><img src="static\del.png "  id="{{item.alias}} {{key}} {{Schedule_key}}" onclick="del_Modal(this)"  height="50px"></img></td>
+                    </tr>
+                    <!-- <th></th> -->
+                            {% endfor %}
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table> 
+        </div>
+    </section>
+    <!-- __________________________________________ 編輯資訊 __________________________________________   -->
+
+    <!-- Add Group Modal -->
+        <div class="modal fade" id="Add_Time_Modal" aria-hidden="false" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="title">Add schedule</h5>
+                  <button type="button" class="close" data-dismiss="modal" data-target="" data-toggle="modal">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group mb-2">
+                        <label for="message-text" class="col-5 col-form-label" id="label_start_time" style="font-size:19px;">Start time :</label>
+                        <input type="time" class="timebox"  id="start_time"  required> </input>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="message-text" class="col-5 col-form-label" id="label_end_time" style="font-size:19px;">End time :</label>
+                        <input type="time" class="timebox"  id="end_time"    required> </input>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button  class="btn btn-primary" id="SaveTime" value="SAVE" data-target="#OK_Modal" data-toggle="modal" data-dismiss="modal" onclick="edit_confirm()">Save</button>
+                </div>
+              </div>
+            </div>
+        </div>
+    <!-- Add Group Modal -->
+
+    <!-- Del fence Modal -->
+    <div class="modal fade" id="Del_Schedule_Modal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="Del_fence_Modal">Delete Schedule</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </div>
+                <div class="modal-body">
+                <p id="text" style="font-size: 20px;"> </p>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close" onclick="del_confirm()">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Del fence Modal -->
+
+</body>
+</html>

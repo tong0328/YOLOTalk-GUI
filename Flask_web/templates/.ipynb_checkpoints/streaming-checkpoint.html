@@ -1,0 +1,223 @@
+<html>
+    
+    <head>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500&family=Open+Sans:ital,wght@1,600&display=swap" rel="stylesheet">
+ 
+      <script src="https://kit.fontawesome.com/8fe09599eb.js" crossorigin="anonymous"></script>
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      <title>YOLOTalk</title>
+
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+    </head>
+
+    <script>
+ 
+        function Open_IMG()
+        { 
+            var formElement = document.getElementById("video");
+            var camera = formElement[0].value;
+            var URL = formElement[1].value;
+            document.getElementById(camera).src=URL;
+            alert('新增成功,\n '+camera+' 號攝影機已經串流下列網址: '+URL);
+            
+          }
+      
+        function Close_IMG()
+        { 
+            var formElement = document.getElementById("video");
+            var camera = formElement[0].value;
+            var URL = formElement[1].value;
+            document.getElementById(camera).src="static/inner.png";
+            
+            alert('刪除成功');
+          }
+
+    </script>
+
+    <style>
+        /*    ______________ 字體設定 ______________   */
+    h1,h2,h3,h4,h5,h6{
+        font-family: 'Noto Sans TC', sans-serif;
+    }
+
+    p,a,input,label,textarea,span,ul,li{
+        font-family: 'Open Sans TC', sans-serif;
+    }
+    /*    ______________ 照片設定  不要爆掉 ______________   */
+    img{
+        max-width: 100%;
+    }
+    /*    ______________ 按鈕設定 ______________   */
+    .btn{
+        background-color: #99b0c7;
+        color: white;
+        padding: 9px 26px;
+        border-radius: 20px;
+    }
+    /*    ______________ 大看板上的選單 ______________   */
+    nav img{
+        width: 200px;
+    }
+
+    header li{
+        margin: 0 15px;
+        font-weight: bold;
+        font-size: 22px;
+    }
+
+    /*    ______________ 大看板 ______________   */
+    #intro .jumbotron{
+        height:150vh;
+        padding: 170px 280px; 
+    }
+    /*    ______________ 大看板>上方板塊 ______________   */
+
+    #intro .upper{
+        position: relative;     
+        top: -5%;
+        transform: translateY(-50%);
+    }
+    #intro .lower{
+        position: relative;     
+        transform: translateY(-10%);
+    }
+    #intro .jumbotron input{
+        font-size: 20px;
+        text-align: center;
+        background-color: burlywood; 
+        border-color: rgb(177, 184, 122);
+        padding-top: 10px ;
+    }
+    #intro .row{
+        padding-top: 5px;
+    }
+    #intro h5{
+        font-size: 25px;
+        background-color: rgba(0, 123, 255, 0.5);
+        padding: 10px ;
+        border-radius: 25px;
+        text-align: center;
+    }
+    #intro .lower {
+        position: relative;
+        text-align: center;
+        padding-left: 50px;
+    }
+    #intro img{
+        height: 540px;
+        width: 960px;
+        border-radius: 50px;
+        padding: 4px;
+        background-color: white;
+        box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.3);  
+    }
+    #intro .row{
+        padding-bottom: 50px;
+    }
+    </style>
+
+    <body>
+<!-- __________________________________________ 上方列表 __________________________________________   -->
+        <header>
+            <div class="Container">
+                <nav class="navbar navbar-expand-lg navbar-light ">
+                    <a class="navbar-brand" href="#">
+                        <img src="static\logo.png">
+                    </a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                  Fence
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item"  href="\" >Home</a>
+                                    <form></form>
+                                    {% for name in navs %}
+                                        <a class="dropdown-item" id="replot_fence"  >{{ name }}</a>
+
+                                    <!-- 用來重新導向舊的畫圖頁面，因POST無法啟動render_template -->
+                                        <form method="post" id="Form_{{name}}" >
+                                            <input type="hidden" name="area" value="{{ name }}">
+                                            <input type="hidden" name="URL" value="REPLOT">
+                                        </form>
+                                    <!-- 用來重新導向舊的畫圖頁面，因POST無法啟動render_template -->
+
+                                    {% endfor %}
+                                    <a class="dropdown-item" onclick="customizeWindowEvent()" >Add new rtsp</a>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="\management">Management</a>
+                            </li>
+                             
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                  Schedule
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+                                    <a class="dropdown-item"  href="\schedule">Fence</a> <form></form>
+                                    <a class="dropdown-item"  >Camera</a>  <form></form>
+                                    <a class="dropdown-item"  >Group</a>  <form></form>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link " href="\streaming"  >Video</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link " href="\training"  >Training(尚未完成)</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </header>  
+<!-- __________________________________________ 大看板 __________________________________________   -->
+        <section id="intro">
+            <div class="jumbotron"> <!-- 大看板，-->
+
+                <div class="lower">
+                    <div class="row">
+                        <div class="col-md-6  ">
+                            <div class="innertext">
+                                <h5> 一號串流位置 </h5>
+                            </div>
+                            <img src="{{ url_for('video_feed_0') }}"  id="1"  onerror="src='static/inner.png'">
+                        </div>
+                        <div class="col-md-6  ">
+                            <div class="innertext">
+                                <h5> 二號串流位置 </h5>
+                            </div>
+                            <img src="{{ url_for('video_feed_1') }}"  id="2" onerror="src='static/inner.png'">
+                        </div>
+
+                    </div>    
+                    <div class="row">
+                        <div class="col-md-6  ">
+                            <div class="innertext">
+                                <h5> 三號串流位置 </h5>
+                            </div>
+                            <img src="{{ url_for('video_feed_2') }}"  id="3" onerror="src='static/inner.png'">
+                        </div>
+                        <div class="col-md-6  ">
+                            <div class="innertext">
+                                <h5> 四號串流位置 </h5>
+                            </div>
+                            <img src="{{ url_for('video_feed_3') }}"  id="4" onerror="src='static/inner.png'">
+                        </div>
+                        <div></div>
+                    </div> 
+                </div>
+            </div>
+        </section>
+    </body>
+</html>

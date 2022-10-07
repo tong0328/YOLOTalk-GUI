@@ -1,0 +1,11 @@
+[Info] Start the program., Time:2022-04-21 22:38:24, Group:, alias:demo, URL: 
+[Info] Start the program., Time:2022-04-21 22:40:16, Group:, alias:demo, URL:./output.avi 
+[Info] Start the program., Time:2022-04-21 22:40:58, Group:, alias:demo, URL:./output.avi 
+[Info] Start the program., Time:2022-04-21 22:41:35, Group:, alias:demo, URL:./output.avi 
+[Info] Stop the program., Time:2022-04-21 22:47:38, Group:, alias:demo, URL:./output.avi 
+[Info] Start the program., Time:2022-08-04 20:24:54, Group:, alias:demo, URL:./output.avi 
+[Info] Start the program., Time:2022-08-04 20:25:31, Group:, alias:demo, URL:./output.avi 
+[Info] Start the program., Time:2022-09-28 22:39:36, Group:, alias:demo, URL:./output.avi 
+[Info] Start the program., Time:2022-09-28 22:41:21, Group:, alias:demo, URL:rtsp://lab610:lab610@140.113.131.8:554/stream1 
+[Info] Start the program., Time:2022-09-28 22:42:11, Group:, alias:demo, URL:rtsp://lab610:lab610@140.113.131.8:554/stream1 
+[Info] Start the program., Time:2022-09-28 22:43:44, Group:, alias:demo, URL:rtsp://lab610:lab610@140.113.131.8:554/stream1 
