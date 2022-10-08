@@ -12,12 +12,33 @@ git clone https://github.com/AlexeyAB/darknet.git
 
 ## Step 2. 於 YOLOTalk 中 新增 Flask_web 資料夾  此為 Flask GUI 檔案夾
 
+專案架構為
 
-
+----- YOLOTalk-GUI
+  |
+  |-- libs (健菖的YOLO檔案)
+  |        |
+  |        |--YOLO_SSIM.py
+  |        |--YOLO.py
+  |        |--utils.py
+  |
+  |--darknet  
+  |--multi-object-tracker
+  |--weights
+  |--cfg_person
+  |--Flask_web ★★★
+           |
+           |--YOLOTalk.py  (Flask)
+                   |--templates
+                   |--static
+                        |--Json_Info
+                        |--alias_pict
+                        |--record
+                        
+                        
 ## Step 3. 安裝套件並修改參數 
 
-> 修改 YOLOTalk.py 內的 
-
+修改 YOLOTalk.py 內的 
 1.app.run 內的 host、port 參數
 2.import YoloDevice 所需的 YOLO_SSIM.py、libs 資料夾
 3.修改各 html 內的 POST 參數
