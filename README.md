@@ -10,27 +10,21 @@ git clone https://github.com/adipandas/multi-object-tracker.git
 git clone https://github.com/AlexeyAB/darknet.git
 ```
 
-## Step 2. 於 YoloTalk 中 新增 Flask_web 資料夾  此為 Flask GUI 檔案夾
+## Step 2. 於 YOLOTalk 中 新增 Flask_web 資料夾  此為 Flask GUI 檔案夾
 
 
 
-## Step 3. 安裝套件並修改 YOLOTalk.py 內的 port、()
+## Step 3. 安裝套件並修改參數 
+
+> 修改 YOLOTalk.py 內的 
+
+1.app.run 內的 host、port 參數
+2.import YoloDevice 所需的 YOLO_SSIM.py、libs 資料夾
+3.修改各 html 內的 POST 參數
 
 
+## 其餘資料夾說明 
 
-## Step 4. (Option) 設置 YoloDevice 物件參數
-
-
-## Step 5: (Option) 設置IoTtalk與LineBot
-> 設置IoTTalk與LineBot的連結
-
-
-make: *** [obj/network_kernels.o] Error 1
-```
-
-編輯```src/network_kernels.cu```，註解```CHECK_CUDA(cudaStreamBeginCapture(stream0, cudaStreamCaptureModeGlobal));```(約在721行)，並執行以下指令，重新編譯 darknet
-
-```bash=
-make clean
-make
-```
+1. Flask_web/static/Json_Info  : 放置各個圍籬紀錄參數檔案
+2. Flask_web/static/alias_pict : 放置各個圍籬所擷取圖片，用於 plotarea 功能繪製圍籬的底圖
+3. Flask_web/static/record     : 放置 YOLO_SSIM.py 所記錄之照片、圖片
