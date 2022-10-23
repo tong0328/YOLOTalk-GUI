@@ -1,276 +1,300 @@
-<html>
-    <head>
-      
-      <!-- jQuery 連結 -->
-      <script src="https://code.jquery.com/jquery-3.4.1.js"integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="crossorigin="anonymous"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-      
-      <!-- Bootstrap 連結 -->
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> 
-
-      <title>YOLOTalk Video</title>
-      
-    </head>
-
+{% extends "base.html" %}
     
 
-    <style>
-        /*    ______________ 字體設定 ______________   */
-    h1,h2,h3,h4,h5,h6{
-        font-family: 'Noto Sans TC', sans-serif;
-    }
+{% block title %} YOLOTalk Video {% endblock %}
+    
 
-    p,a,input,label,textarea,span,ul,li{
-        font-family: 'Open Sans TC', sans-serif;
-    }
-    /*    ______________ 照片設定  不要爆掉 ______________   */
-    img{
-        max-width: 100%;
-    }
-    /*    ______________ 按鈕設定 ______________   */
-    .btn{
-        background-color: #99b0c7;
-        color: white;
-        padding: 9px 26px;
-        border-radius: 20px;
-    }
-    /*    ______________ 大看板上的選單 ______________   */
-    nav img{
-        width: 200px;
-    }
+{% block style %}
+<style>
+    /*    ______________ 字體設定 ______________   */
+h1,h2,h3,h4,h5,h6{
+    font-family: 'Noto Sans TC', sans-serif;
+}
 
-    header li{
-        margin: 0 15px;
+p,a,input,label,textarea,span,ul,li{
+    font-family: 'Open Sans TC', sans-serif;
+}
+/*    ______________ 照片設定  不要爆掉 ______________   */
+img{
+    max-width: 100%;
+}
+/*    ______________ 按鈕設定 ______________   */
+.btn{
+    background-color: #99b0c7;
+    color: white;
+    padding: 9px 26px;
+    border-radius: 20px;
+}
+/*    ______________ 大看板上的選單 ______________   */
+nav img{
+    width: 200px;
+}
+
+header li{
+    margin: 0 15px;
+    font-weight: bold;
+    font-size: 22px;
+}
+.dropdown-item {
         font-weight: bold;
-        font-size: 22px;
+        font-size: 18px;
     }
+/*    ______________ 大看板 ______________   */
+#intro .jumbotron{
+    height:150vh;
+    padding: 170px 280px; 
+}
+/*    ______________ 大看板>上方板塊 ______________   */
 
-    /*    ______________ 大看板 ______________   */
-    #intro .jumbotron{
-        height:150vh;
-        padding: 170px 280px; 
-    }
-    /*    ______________ 大看板>上方板塊 ______________   */
+#intro .upper{
+    position: relative;     
+    top: -5%;
+    transform: translateY(-50%);
+}
+#intro .lower{
+    position: relative;     
+    transform: translateY(-10%);
+}
+#intro .jumbotron input{
+    font-size: 20px;
+    text-align: center;
+    background-color: burlywood; 
+    border-color: rgb(177, 184, 122);
+    padding-top: 10px ;
+}
+#intro .row{
+    padding-top: 5px;
+}
+#intro h5{
+    font-size: 25px;
+    background-color: rgba(0, 123, 255, 0.5);
+    padding: 10px ;
+    border-radius: 25px;
+    text-align: center;
+}
+#intro .lower {
+    position: relative;
+    text-align: center;
+    padding-left: 50px;
+}
+#intro img{
+    height: 540px;
+    width: 960px;
+    border-radius: 50px;
+    padding: 4px;
+    background-color: white;
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.3);  
+}
+#intro .row{
+    padding-bottom: 0px;
+}
+#intro .upper {
+    padding-bottom: 30px;
+}
+</style>
+{% endblock %}
 
-    #intro .upper{
-        position: relative;     
-        top: -5%;
-        transform: translateY(-50%);
-    }
-    #intro .lower{
-        position: relative;     
-        transform: translateY(-10%);
-    }
-    #intro .jumbotron input{
-        font-size: 20px;
-        text-align: center;
-        background-color: burlywood; 
-        border-color: rgb(177, 184, 122);
-        padding-top: 10px ;
-    }
-    #intro .row{
-        padding-top: 5px;
-    }
-    #intro h5{
-        font-size: 25px;
-        background-color: rgba(0, 123, 255, 0.5);
-        padding: 10px ;
-        border-radius: 25px;
-        text-align: center;
-    }
-    #intro .lower {
-        position: relative;
-        text-align: center;
-        padding-left: 50px;
-    }
-    #intro img{
-        height: 540px;
-        width: 960px;
-        border-radius: 50px;
-        padding: 4px;
-        background-color: white;
-        box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.3);  
-    }
-    #intro .row{
-        padding-bottom: 0px;
-    }
-    #intro .upper {
-        padding-bottom: 30px;
-    }
-    </style>
 
-    <body>
-<!-- __________________________________________ 上方列表 __________________________________________   -->
-<header>
-    <div class="Container">
-        <nav class="navbar navbar-expand-lg navbar-light ">
-            <a class="navbar-brand" href="\">
-                <img src="static\logo.png">
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          Fence
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item"  href="\" >Home</a>
-                            <form></form>
-                            {% for name in navs %}
-                                <a class="dropdown-item" id="replot_fence"  >{{ name }}</a>
-
-                            <!-- 用來重新導向舊的畫圖頁面，因POST無法啟動render_template -->
-                                <form method="post" id="Form_{{name}}" >
-                                    <input type="hidden" name="area" value="{{ name }}">
-                                    <input type="hidden" name="URL" value="REPLOT">
-                                </form>
-                            <!-- 用來重新導向舊的畫圖頁面，因POST無法啟動render_template -->
-
-                            {% endfor %}
-                            <a class="dropdown-item" onclick="customizeWindowEvent()" >Add new rtsp</a>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="\management">Management</a>
-                    </li>
-                     
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          Schedule
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-
-                            <a class="dropdown-item"  href="\schedule">Fence</a> <form></form>
-                            <a class="dropdown-item"  >Camera</a>  <form></form>
-                            <a class="dropdown-item"  >Group</a>  <form></form>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link " href="\streaming"  >Video</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link " href="\training"  >Training(尚未完成)</a>
-                    </li>
-                </ul>
+{% block intro %}      
+<section id="intro">
+    <div class="jumbotron"> 
+<!-- __________________________________________ 分頁 __________________________________________   -->
+        <div class="upper">
+            <div id="pagination-container">
+                <nav aria-label="Page navigation example">
+                    <ul id="Page_nav" class="pagination pagination-lg justify-content-end" >
+                        <li id="first" class="page-item" onclick="clickBtn(this)">
+                            <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li id="1" class="page-item active" onclick="clickBtn(this)">
+                            <a class="page-link" href="#">1</a>
+                        </li>
+                        <li id="last"  class="page-item" onclick="clickBtn(this)">
+                            <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
-        </nav>
-    </div>
-</header>  
-<!-- __________________________________________ 大看板 __________________________________________   -->
-        
-        <section id="intro">
-            <div class="jumbotron"> 
-                <div class="upper">
-                        <!-- __________________________________________ 分頁 __________________________________________   -->
-                    <div id="pagination-container">
-                        <nav aria-label="Page navigation example">
-                            <ul id="Page_nav" class="pagination pagination-lg justify-content-end" >
-                              <li id="first" class="page-item">
-                                <a class="page-link" href="#" aria-label="Previous">
-                                  <span aria-hidden="true">&laquo;</span>
-                                </a>
-                              </li>
-                              <li id="1" class="page-item"><a class="page-link" href="#">1</a></li>
-                              <li id="last"  class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
-                                  <span aria-hidden="true">&raquo;</span>
-                                </a>
-                              </li>
-                            </ul>
-                        </nav>
+        </div>
+<!-- __________________________________________ 影片欄 __________________________________________   -->
+        <div class="lower">
+            <div class="row">
+                <div class="col-md-6  ">
+                    <div class="innertext">
+                        <h5> {{alias_list[0]}} </h5>
                     </div>
+                    <img src="/video/0"  id="1"  onerror="src='static/inner.png'">
                 </div>
-                <div class="lower">
-
-                    <div class="row">
-                        <div class="col-md-6  ">
-                            <div class="innertext">
-                                <h5> {{alias_list[0]}} </h5>
-                            </div>
-                            <img src="/video/0"  id="1"  onerror="src='static/inner.png'">
-                        </div>
-                        <div class="col-md-6  ">
-                            <div class="innertext">
-                                <h5> {{alias_list[1]}} </h5>
-                            </div>
-                            <img src="/video/1"  id="2" onerror="src='static/inner.png'">
-                        </div>
-                    </div>    
-
-                    <div class="row">
-                        <div class="col-md-6  ">
-                            <div class="innertext">
-                                <h5> {{alias_list[2]}} </h5>
-                            </div>
-                            <img src="/video/2"  id="3" onerror="src='static/inner.png'">
-                        </div>
-                        <div class="col-md-6  ">
-                            <div class="innertext">
-                                <h5> {{alias_list[3]}} </h5>
-                            </div>
-                            <img src="/video/3"  id="4" onerror="src='static/inner.png'">
-                        </div>
-                    </div> 
+                <div class="col-md-6  ">
+                    <div class="innertext">
+                        <h5> {{alias_list[1]}} </h5>
+                    </div>
+                    <img src="/video/1"  id="2" onerror="src='static/inner.png'">
                 </div>
-            </div>
-        </section>
-    </body>
-    <script>
-        $(document).ready(function(){
+            </div>    
 
-            // Nav 導向畫圖頁面
-            $("a#replot_fence").click(function(){
-                fence = this.text
-                FormName = "Form_"+fence
-                document.getElementById(FormName).submit()
-            });
+            <div class="row">
+                <div class="col-md-6  ">
+                    <div class="innertext">
+                        <h5> {{alias_list[2]}} </h5>
+                    </div>
+                    <img src="/video/2"  id="3" onerror="src='static/inner.png'">
+                </div>
+                <div class="col-md-6  ">
+                    <div class="innertext">
+                        <h5> {{alias_list[3]}} </h5>
+                    </div>
+                    <img src="/video/3"  id="4" onerror="src='static/inner.png'">
+                </div>
+            </div> 
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+
+{% block script %}
+<script>
+    $(document).ready(function(){
+
+        // Nav 導向畫圖頁面
+        $("a#replot_fence").click(function(){
+            fence = this.text
+            FormName = "Form_"+fence
+            document.getElementById(FormName).submit()
         });
-        var perPage = 4; // items in one page 
-        var alias_list_len = Number("{{length}}"); // how many video should be show
-        var totalPage = parseInt(parseInt(alias_list_len / perPage))
-        var nowPage   = (parseInt(alias_list_len % perPage))
-        console.log(nowPage)
-        // 
-        var All_li = document.getElementById('Page_nav').getElementsByTagName("li")
-        var All_li_2 = document.getElementById('Page_nav')
-        console.log(All_li_2)
+    });
+    var perPage = 4;                                                    // items in one page 
+    var alias_list_len = Number("{{length}}");                          // how many video should be show
+    var totalPage   = Math.ceil(alias_list_len / perPage)               // total pages now 
+    var nowPageNum     = parseInt(alias_list_len % perPage)                // how many alias in page (0~4)
+    var maxPageNum  = 3
 
-        if (nowPage >=1){
-            
-            for (i=0; i<All_li.length ; i++){
-                if( All_li[i].id == nowPage){
-                    add(All_li_2)
-                }
-            }
+    var All_li = document.getElementById('Page_nav').getElementsByTagName("li")     // li
+    var All_ul = document.getElementById('Page_nav')                                // ul
+    var nowPage = document.getElementsByClassName("page-item active")[0];
+    change_alias_title(nowPage.id)
+
+    if (nowPageNum >= maxPageNum){
+
+        add();
+        totalPage += 1 ;
+    }
+
+    function add(){
+        var li = document.createElement("li");          // create li
+        var a  = document.createElement("a");           // creare a in li
+        var ul  = document.getElementById('Page_nav');
+        var newPageNum =  totalPage + 1 ;
         
+        // add new li after last li 
+        li.append(document.createTextNode(""));
+        li.setAttribute("id","2");
+        li.setAttribute("class","page-item");
+        li.setAttribute("onclick","clickBtn(this)");
+        ul.appendChild(li);
+
+        // add <a> for new li 
+        a.append(document.createTextNode(newPageNum));
+        a.setAttribute("class","page-link");
+        a.setAttribute("href","#");
+        li.append(a);
+        
+        // move 「>>」 li ,which  id=last  to the last  
+        var last = document.getElementById("last");
+        ul.append(last);
+    }
+
+    function clickBtn(a){
+        
+        var nowPage = document.getElementsByClassName("page-item active")[0];
+        nowPage.setAttribute("class","page-item");
+
+        if( a.id == "first" ){
+            var newPage = document.getElementById(Number(nowPage.id) - 1);
+            console.log("first , newPage  :",newPage ,"  nowPage :",nowPage)    
+            if ((newPage == null) || (newPage.id <=0)){
+                newPage = nowPage
+            }
+            newPage.setAttribute("class","page-item active");
+            move(newPage.id )
         }
 
-        function add(add_after){
-            var li = document.createElement("li");
-            var a  = document.createElement("a");
-            var ul  = document.getElementById('Page_nav')
-
-            li.append(document.createTextNode(""));
-            li.setAttribute("class","page-item")
-            li.setAttribute("id","2")
-            
-            add_after.appendChild(li);
-
-            a.append(document.createTextNode("2"));
-            a.setAttribute("class","page-link")
-            a.setAttribute("href","#")
-            li.append(a);
-            
-            var last = document.getElementById("last");
-            var t = document.getElementById("2");
-            console.log(t.innerHTML)
-            ul.append(last)
-            
-
+        else if(a.id == "last" ){
+            var newPage = document.getElementById(Number(nowPage.id) + 1);
+            if ((newPage == null) || (newPage.id >totalPage)){
+                newPage = nowPage
+            }
+            newPage.setAttribute("class","page-item active");
+            move(newPage.id)
         }
-    </script>
-</html>
+
+        else {
+            a.setAttribute("class","page-item active");
+            move(a.id)
+        }
+    }
+
+    function move(nowID){
+
+        var video1  = document.getElementsByTagName("img")[1]
+        var video2  = document.getElementsByTagName("img")[2]
+        var video3  = document.getElementsByTagName("img")[3]
+        var video4  = document.getElementsByTagName("img")[4]
+
+        change_alias_title(nowID)
+
+        if (nowID <=1){ 
+            nowID = 1;  
+        } 
+        
+        num1 = Number(4)*(nowID-1) + Number(0)
+        num2 = Number(4)*(nowID-1) + Number(1)
+        num3 = Number(4)*(nowID-1) + Number(2)
+        num4 = Number(4)*(nowID-1) + Number(3)
+
+        video1.setAttribute("src", `/video/${num1}`)
+        video1.setAttribute("id",num1)
+        
+        video2.setAttribute("src", `/video/${num2}`)
+        video2.setAttribute("id",num2)
+        
+        video3.setAttribute("src", `/video/${num3}`)
+        video3.setAttribute("id",num3)
+        
+        video4.setAttribute("src", `/video/${num4}`)
+        video4.setAttribute("id",num4)
+    }
+    
+    function change_alias_title(nowID){
+        var title1  = document.getElementsByTagName("h5")[0]
+        var title2  = document.getElementsByTagName("h5")[1]
+        var title3  = document.getElementsByTagName("h5")[2]
+        var title4  = document.getElementsByTagName("h5")[3]
+
+        var alias_list = "{{alias_list[:]}}".split("&#39;")
+        var titles = []
+
+        num1 = Number(4)*(nowID-1) + Number(0)
+        num2 = Number(4)*(nowID-1) + Number(1)
+        num3 = Number(4)*(nowID-1) + Number(2)
+        num4 = Number(4)*(nowID-1) + Number(3)
+
+        for(i=1; i<alias_list.length ;i+=2){
+            
+            str = alias_list[i].replace(".jpg"," ")
+            console.log(str)
+            titles.push(str)
+        }
+        title1.innerText  = titles[num1]
+        title2.innerText  = titles[num2]
+        title3.innerText  = titles[num3]
+        title4.innerText  = titles[num4]
+    }
+    
+</script>
+{% endblock %}

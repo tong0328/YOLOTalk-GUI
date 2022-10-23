@@ -1,70 +1,105 @@
-<html>
-    <title>YOLOTalk Management</title>
-    <style>
-        /*    ______________ 字體設定 ______________   */
-        h1,h2,h3,h4,h5,h6{
-            font-family: 'Noto Sans TC', sans-serif;
-            color: rgb(116 109 109);
-        }
-
-        p,a,input,label,textarea,span,ul,li{
-            font-family: 'Open Sans TC', sans-serif;
-        }
-        /*    ______________ 照片設定  不要爆掉 ______________   */
-        img{
-            max-width: 100%;
-        }
-        /*    ______________ 按鈕設定 ______________   */
-        .btn{
-            background-color: #b1d3f5;
-            color: rgb(116 109 109);
-            font-size: 20px;
-            margin-top: -3px;
-            text-align: right;
-        }
-
-        /*    ______________ 大看板上的選單 ______________   */
-        nav img{
-            width: 200px;
-        }
-        header li{
-            margin: 0 15px;
-            font-weight: bold;
-            font-size: 22px;
-        }
-        /*    ______________ 大看板 ______________   */
-        #intro .jumbotron{
-            height:84vh;
-            padding: 50px 500px; 
-        }#intro .container-md {
-            position: relative;     
-            top: 20%;
-            transform: translateY(-50%);
-            padding-top: 10px ;
-            padding-bottom: 1px ;
-            display: none;
-            border-style: solid;
-            border-color: rgb(116, 109, 109);
-            border-radius: 20px;
-            border-width: 5px;
-            background-color: #b1d3f5;
-        }
-    </style>
-<head>
-    
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500&family=Open+Sans:ital,wght@1,600&display=swap" rel="stylesheet">
+{% extends "base.html" %}
   
-    <!-- <script src="https://kit.fontawesome.com/8fe09599eb.js" crossorigin="anonymous"></script> -->
-    <script src="https://code.jquery.com/jquery-3.4.1.js"integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="crossorigin="anonymous"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script> -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
-    <title>YOLOTalk</title>
-</head>
+{% block title %} YOLOTalk Management{% endblock %}
+
+
+{% block style %}
+<style>
+    /*    ______________ 字體設定 ______________   */
+    h1,h2,h3,h4,h5,h6{
+        font-family: 'Noto Sans TC', sans-serif;
+        color: rgb(116 109 109);
+    }
+
+    p,a,input,label,textarea,span,ul,li{
+        font-family: 'Open Sans TC', sans-serif;
+    }
+    /*    ______________ 照片設定  不要爆掉 ______________   */
+    img{
+        max-width: 100%;
+    }
+    /*    ______________ 按鈕設定 ______________   */
+    .btn{
+        background-color: #b1d3f5;
+        color: rgb(116 109 109);
+        font-size: 20px;
+        margin-top: -3px;
+        text-align: right;
+    }
+
+    /*    ______________ 大看板上的選單 ______________   */
+    nav img{
+        width: 200px;
+    }
+    header li{
+        margin: 0 15px;
+        font-weight: bold;
+        font-size: 22px;
+    }
+    .dropdown-item {
+        font-weight: bold;
+        font-size: 18px;
+    }
+    /*    ______________ 大看板 ______________   */
+    #intro .jumbotron{
+        height:84vh;
+        padding: 50px 500px; 
+    }#intro .container-md {
+        position: relative;     
+        top: 20%;
+        transform: translateY(-50%);
+        padding-top: 10px ;
+        padding-bottom: 1px ;
+        display: none;
+        border-style: solid;
+        border-color: rgb(116, 109, 109);
+        border-radius: 20px;
+        border-width: 5px;
+        background-color: #b1d3f5;
+    }
+</style>
+{% endblock %}
+
+
+{% block intro %}       
+<section id="intro">
+    <div class="jumbotron" >   
+        <table id="table"  class="table table-dark" data-url="static/camera_info.json" data-height="299">
+            <thead>
+              <tr>
+                <th scope="col" data-field="fence">Fence</th>
+                <th scope="col" data-field="Group">Group</th>
+                <th scope="col" data-field="Alarm Level">Alarm Level</th>
+                <th scope="col" data-field="Note">Note</th>
+                <th scope="col" data-field="Sensitivity">Sensitivity</th>
+                <th scope="col" data-field="Edit">Edit</th>
+              </tr>
+            </thead>
+            <tbody >
+                {% for item in items %}
+                    {% for key in item.fence.keys() %}
+                <tr>
+                    <td id="{{item.alias}} {{key}}_Name" style="font-size:20px">{{item.alias}}  ( {{key}} )</td>
+                    <td class="group" id="{{item.alias}} {{key}}_Group" style="font-size:20px">{{item.fence[key].Group}}  </td>
+                    <td id="{{item.alias}} {{key}}_Alarm_Level" style="font-size:20px">{{item.fence[key].Alarm_Level}}  </td>
+                    <td id="{{item.alias}} {{key}}_Note" style="font-size:20px">{{item.fence[key].Note}}  </td>
+                    <td id="{{item.alias}} {{key}}_Sensitivity" style="font-size:20px">{{item.fence[key].Sensitivity}}  </td>
+                    <td>
+                        <img src="static\edit.png " id="{{item.alias}} {{key}}" onclick="edit_Modal(this)" height="50px"></img>
+                        <img src="static\del.png "  id="{{item.alias}} {{key}}" onclick="del_Modal(this)"  height="50px"></img>
+                    </td>
+                </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table> 
+    </div>
+</section>
+{% endblock %}
+
+
+{% block script %}
 <script>
     
     var group_set = new Set()
@@ -175,198 +210,4 @@
     
 
 </script>
-<body>
- <!-- __________________________________________ 上方列表 __________________________________________   -->
-        <header>
-            <div class="Container">
-                <nav class="navbar navbar-expand-lg navbar-light ">
-                    <a class="navbar-brand" href="#">
-                        <img src="static\logo.png">
-                    </a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav mr-auto">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                  Fence
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item"  href="\" >Home</a>
-                                    <form></form>
-                                    {% for name in navs %}
-                                        <a class="dropdown-item" id="replot_fence"  >{{ name }}</a>
-
-                                    <!-- 用來重新導向舊的畫圖頁面，因POST無法啟動render_template -->
-                                        <form method="post" id="Form_{{name}}" >
-                                            <input type="hidden" name="area" value="{{ name }}">
-                                            <input type="hidden" name="URL" value="REPLOT">
-                                        </form>
-                                    <!-- 用來重新導向舊的畫圖頁面，因POST無法啟動render_template -->
-
-                                    {% endfor %}
-                                    <a class="dropdown-item" onclick="customizeWindowEvent()" >Add new rtsp</a>
-                                </div>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="\management">Management</a>
-                            </li>
-                             
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                  Schedule
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-
-                                    <a class="dropdown-item"  href="\schedule">Fence</a> <form></form>
-                                    <a class="dropdown-item"  >Camera</a>  <form></form>
-                                    <a class="dropdown-item"  >Group</a>  <form></form>
-                                </div>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link " href="\streaming"  >Video</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link " href="\training"  >Training(尚未完成)</a>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-            </div>
-        </header>  
-    <!-- __________________________________________ 大看板(表格) __________________________________________   -->
-    <section id="intro">
-        <div class="jumbotron" >   
-            <table id="table"  class="table table-dark" data-url="static/camera_info.json" data-height="299">
-                <thead>
-                  <tr>
-                    <th scope="col" data-field="fence">Fence</th>
-                    <th scope="col" data-field="Group">Group</th>
-                    <th scope="col" data-field="Alarm Level">Alarm Level</th>
-                    <th scope="col" data-field="Note">Note</th>
-                    <th scope="col" data-field="Sensitivity">Sensitivity</th>
-                    <th scope="col" data-field="Edit">Edit</th>
-                  </tr>
-                </thead>
-                <tbody >
-                    {% for item in items %}
-                        {% for key in item.fence.keys() %}
-                    <tr>
-                        <td id="{{item.alias}} {{key}}_Name" style="font-size:20px">{{item.alias}}  ( {{key}} )</td>
-                        <td class="group" id="{{item.alias}} {{key}}_Group" style="font-size:20px">{{item.fence[key].Group}}  </td>
-                        <td id="{{item.alias}} {{key}}_Alarm_Level" style="font-size:20px">{{item.fence[key].Alarm_Level}}  </td>
-                        <td id="{{item.alias}} {{key}}_Note" style="font-size:20px">{{item.fence[key].Note}}  </td>
-                        <td id="{{item.alias}} {{key}}_Sensitivity" style="font-size:20px">{{item.fence[key].Sensitivity}}  </td>
-                        <td>
-                            <img src="static\edit.png " id="{{item.alias}} {{key}}" onclick="edit_Modal(this)" height="50px"></img>
-                            <img src="static\del.png "  id="{{item.alias}} {{key}}" onclick="del_Modal(this)"  height="50px"></img>
-                        </td>
-                    </tr>
-                        {% endfor %}
-                    {% endfor %}
-                </tbody>
-            </table> 
-        </div>
-    </section>
-    <!-- __________________________________________ 編輯資訊 __________________________________________   -->
-
-    <div class="modal fade" id="Edit_Modal" tabindex="-1" role="dialog" aria-labelledby="Edit_Modal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="Edit_Modal_title">Edit : </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                    <div class="form-group mb-2">
-                        <label for="recipient-name" class="col-4 col-form-label">Group :</label>
-                        <select id="select-group" class="col-5 col-form-control" >
-                            <!-- <option> - </option> -->
-                        </select>
-                        <button type="button" id="Add_Group_Btn"class="btn btn-outline-success btn-sm" data-target="#Add_Group_Modal" data-toggle="modal"  data-dismiss="modal">Add Group</button>
-                    </div>
-                    
-                    <div class="form-group mb-2">
-                        <label for="message-text" class="col-4 col-form-label">Sensitivity :</label>
-                        <input class="col-5 col-form-control" id="message-text-Sensitivity" type="number" placeholder="only 0.1 ~ 1" step="0.1" min="0.1" max="1"></input>
-                    </div>
-                    <div class="form-group mb-2">
-                        <label for="message-text" class="col-4 col-form-label">Place :</label>
-                        <input class="col-5 col-form-control" id="message-text-Place"></input>
-                    </div>
-                    <div class="form-group mb-2">
-                        <label for="message-text" class="col-4 col-form-label">Notes :</label>
-                        <input class="col-5 col-form-control" id="message-text-Notes"></input>
-                    </div>
-                    <div class="form-group mb-2">
-                        <label for="message-text" class="col-4 col-form-label">Alarm message :</label>
-                        <input class="col-5 col-form-control" id="message-text-Alarm-message"></input>
-                    </div>
-                    <div class="form-group mb-2">
-                        <label for="recipient-name" class="col-4 col-form-label-Alarm-level">Alarm level :</label>
-                        <select id="select-Alarm_Level" class="col-5 col-form-control" >
-                            <option selected>General </option>
-                            <option >           High </option>
-                        </select>
-                    </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" id="confirm" class="btn btn-primary" onclick="edit_confirm()" data-dismiss="modal" aria-label="Close">Confirm</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Add Group Modal -->
-    <div class="modal fade" id="Add_Group_Modal" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalToggleLabel">Add Group</h5>
-              <button type="button" class="close" data-dismiss="modal" data-target="#exampleModal" data-toggle="modal">
-              <span aria-hidden="true">&times;</span>
-            </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group mb-2">
-                    <label for="message-text" class="col-3 col-form-label">Group :</label>
-                    <input class="col-5 col-form-control" id="GroupName" required></input>
-                </div>
-            </div>
-            <div class="modal-footer">
-              <button  class="btn btn-primary" id="SaveName" value="SAVE" data-target="#Edit_Modal" data-toggle="modal" data-dismiss="modal">Save</button>
-            </div>
-          </div>
-        </div>
-    </div>
-    <!-- Add Group Modal -->
-
-    <!-- Del fence Modal -->
-    <div class="modal fade" id="Del_fence_Modal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h5 class="modal-title" id="Del_fence_Modal">Delete </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </div>
-                <div class="modal-body">
-                <p id="text" style="font-size: 20px;"> </p>
-                </div>
-                <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close" onclick="del_confirm()">Yes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</body>
-</html>
+{% endblock %}

@@ -46,7 +46,7 @@
         </div>
     </div>
 
-    <canvas id="canvas" width="1920" height="1080" style="background-image:url( ' {{data}} ' ) ;background-size: cover; background-position: center; "> 
+    <canvas id="canvas" width="{{shape[1]}}" height="{{shape[0]}}" style="background-image:url( ' {{data}} ' ) ;background-size: cover; background-position: center; "> 
     </canvas>
     
 </body>
@@ -167,7 +167,6 @@
             { "vertex"   : "DELETE",
               "alias":"{{name}}",
               "FenceName": Del_FenceName},
-
               function(data, status, jqXHR) {// success callback
 		        alert('status : ' + status + ',\nFenceName : ' + JSON.stringify(Del_FenceName) + " is been deleted");
 			});
@@ -182,7 +181,7 @@
         $.post("http://panettone.iottalk.tw:10328/plotarea",   // url  重要  必須要改
             { "vertex"   : vertex,
               "alias":"{{name}}",
-              "FenceName": FenceName },
+              "FenceName": FenceName},
 
               function(data, status, jqXHR) {// success callback
 		        alert('status: ' + status + ',\nFenceName: ' + FenceName+"\npoint:"+vertex);

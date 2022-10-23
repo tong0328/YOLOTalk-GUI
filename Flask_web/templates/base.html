@@ -1,29 +1,20 @@
 <html>
-
+    <title>{% block title %}YOLOTalk Home{% endblock %}</title>
     <head>
-    
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-      <link rel="preconnect" href="https://fonts.googleapis.com">
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link rel="preconnect" href="https://fonts.googleapis.com">
-      <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500&family=Open+Sans:ital,wght@1,600&display=swap" rel="stylesheet">
-    
-      <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
-      <script src="https://kit.fontawesome.com/8fe09599eb.js" crossorigin="anonymous"></script>
+      <!-- jQuery 連結 -->
       <script src="https://code.jquery.com/jquery-3.4.1.js"integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      <!-- Bootstrap 連結 -->
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> 
     </head>
-
+    
+    {% block style %}
     <style>
         /*    ______________ 字體設定 ______________   */
         h1,h2,h3,h4,h5,h6{
             font-family: 'Noto Sans TC', sans-serif;
             color: rgb(116 109 109);
-        }
-
-        p,a,input,label,textarea,span,ul,li{
-            font-family: 'Open Sans TC', sans-serif;
         }
         /*    ______________ 照片設定  不要爆掉 ______________   */
         img{
@@ -47,6 +38,10 @@
             font-weight: bold;
             font-size: 22px;
         }
+        .dropdown-item {
+            font-weight: bold;
+            font-size: 50px;
+        }
         /*    ______________ 大看板 ______________   */
         #intro .jumbotron{
             height:84vh;
@@ -60,7 +55,7 @@
             padding-left: 5px ; 
             padding-right: 5px ;
             padding-bottom: 1px ;
-            display: none;
+
             border-style: solid;
             border-color: rgb(116, 109, 109);
             border-radius: 20px;
@@ -95,9 +90,10 @@
             color: black;
         }
     </style>
-    <title>{% block title %}{% endblock %}</title>
+    {% endblock %}
+
     <body>
-            <!-- __________________________________________ 上方列表 __________________________________________   -->
+        <!--  上方列表  -->
         <header>
             <div class="Container">
                 <nav class="navbar navbar-expand-lg navbar-light ">
@@ -111,49 +107,74 @@
                         <ul class="navbar-nav mr-auto">
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Fence
+                                  Fence
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item"  href="\" >Home</a>
+                                    <a class="dropdown-item"  href="\" >Add new RTSP</a>
                                     <form></form>
-                                    {% for name in items %}
+                                    {% for name in navs %}
                                         <a class="dropdown-item" id="replot_fence"  >{{ name }}</a>
-
                                     <!-- 用來重新導向舊的畫圖頁面，因POST無法啟動render_template -->
                                         <form method="post" id="Form_{{name}}" >
                                             <input type="hidden" name="area" value="{{ name }}">
                                             <input type="hidden" name="URL" value="REPLOT">
                                         </form>
                                     <!-- 用來重新導向舊的畫圖頁面，因POST無法啟動render_template -->
-
                                     {% endfor %}
-                                    <a class="dropdown-item" onclick="customizeWindowEvent()" >Add new rtsp</a>
                                 </div>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="\management">Management</a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                暫無功能
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="#">1</a>
-                                    <a class="dropdown-item" href="#">2</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#">3</a>
-                                </div>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link " href="\contact"  >暫無功能</a>
+                            <li class="nav-item"><a class="nav-link" href="\management">Management</a></li>
+                            <li class="nav-item dropdown"><a class="nav-link" href="\schedule" >Schedule</a></li>
+                            <li class="nav-item"><a class="nav-link" href="\streaming">Video</a></li>
+                            <li class="nav-item"><a class="nav-link" href="\training">Training(尚未完成)</a>
                             </li>
                         </ul>
                     </div>
                 </nav>
             </div>
-        </header>  
-        {% block main %}{% endblock %}
-
-        {% block script %}{% endblock %}
+        </header>
+        <!--  大看板    --> 
+        {% block intro %}              
+                <section id="intro">
+                    <div class="jumbotron" > 
+                            <div class="container-md " id="input">   
+                                <div class="col align-self-center"  >
+                                    <form id="rtsp" method="POST">
+                                            <div class="row justify-content-between" >
+                                                <h4>Add new Fence</h4>
+                                                <input type="button" class="btn" value="x" onclick="display_off()"> 
+                                            </div>
+                                            <div class="row justify-content-center" >               
+                                                <div class="col-3">
+                                                    <h4>rtsp URL:</h4>
+                                                </div>
+                                                <div class="col-8">
+                                                    <input name="URL" type="text" class="form-control" placeholder="Please Enter rtsp URL" aria-label="With textarea" required></input>
+                                                </div>
+                                            </div>
+                                            <div class="row justify-content-center" >
+                                                <div class="col-3">     
+                                                    <h4>Fence name:</h4>
+                                                </div>
+                                                <div class="col-8">
+                                                    <input name="area" type="text" class="form-control" placeholder="Please Enter name of fence" aria-label="With textarea" required></input>
+                                                </div>                                         
+                                            </div>
+                                            <div class="row justify-content-end">
+                                                <div class="col-3">
+                                                    <input class="btn btn-primary" type="submit" value="SAVE"  onclick="successfulSubmit()"> 
+                                                </div>
+                                            </div>
+                                    </form>
+                                </div>
+                            </div>
+                    </div>
+                </section>
+        {% endblock %}   
     </body> 
+
+    <!--  Java Script-->
+
+{% block script %}<script> </script>{% endblock %}
+
 </html>
