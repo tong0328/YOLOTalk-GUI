@@ -2,20 +2,25 @@ import datetime
 import os
 import shutil
 import sys
-
+import json
 import cv2
 import matplotlib.path as mplPath
 import numpy as np
-
+from darknet import darknet
 from skimage.metrics import structural_similarity
+
+# import below is jim's YOLOtalk code
+import sys
+sys.path.append("..") 
+from darknet import darknet
+from libs.utils import *
+
+
+
 
 
 def detect_filter(detections, target_classes, vertex):
-    """
-    a=123
-    b=56465
-    c=456
-    """
+
     results = []
     
     for label, confidence, bbox in detections:        

@@ -38,7 +38,9 @@ class YoloDevice():
                  set_W=None, set_H=None):
         
         self.video_url = video_url
-        self.output_dir = output_dir        
+        self.output_dir = output_dir
+        self.video_output_name = ""
+        self.video_output_draw_name = ""        
         self.auto_restart = auto_restart
         self.display_message = display_message
         self.data_file = data_file
@@ -314,7 +316,7 @@ class YoloDevice():
     
     def video_capture(self):
         t = threading.currentThread()   
-        time.sleep(5) # waiting for loading yolo model
+        time.sleep(1) # waiting for loading yolo model
         
         while getattr(t, "do_run", True):
             self.ret, self.frame = self.cap.read() 
