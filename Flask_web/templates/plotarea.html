@@ -26,7 +26,7 @@
                                     <h4>Fence Name:</h4>
                                 </div>
                                 <div class="col-7">
-                                    <input id="FenceName" type="text" class="form-control"  aria-label="With textarea" required></input>    
+                                    <input id="FenceName" type="text" class="form-control"  aria-label="With textarea" pattern="[a-zA-Z0-9_]*" title="Fence name only allow a~z、A~Z、0~9、_  "  ></input>    
                                 </div>
                             </div>
                         </div>
@@ -63,11 +63,16 @@
     var point_x   = [];
     var point_y   = [];
     var DeleteNumber = 0;
+    var oldName = "none"
+
     mouse_times = 0;    // 滑鼠點擊次數
     box_number = 0;     // 警戒範圍數量
     drawing = false;    // 暫停繪製線條功能
 
-    $(document).ready(function(){ Reload() });      // 重新叫出JSON 判斷是否原先有格子，並予以上色
+    $(document).ready(function(){ 
+        Reload()        // 重新叫出JSON 判斷是否原先有格子，並予以上色
+        check_Input()   // 檢測input name 格式
+    });      
 
     $("canvas").mousemove(function(e){
         if(!drawing) return;
@@ -147,10 +152,9 @@
     });         
     
     $("input#Delete").click(function (){
-        console.log("DeleteNumber:",DeleteNumber);
-        console.log("need to delete all_point_x_y:",all_point_x_y[DeleteNumber-1])
+        var oldName = "none"
         Del_FenceName = FenceNameList[DeleteNumber-1]
-        console.log("need to delete Fence Name:",Del_FenceName);
+        
 
         all_point_x_y.splice(DeleteNumber-1,1);
         FenceNameList.splice(DeleteNumber-1,1);
@@ -160,13 +164,15 @@
         point_x_y=[];
         point_x = [];                                           // 把剛剛的點刪掉
         point_y = [];                                           // 把剛剛的點刪掉        
-        mouse_times=0;                                          // 重新開始
-
+        mouse_times  = 0;                                       // 重新開始
+        DeleteNumber = 0;
  
         $.post("http://panettone.iottalk.tw:10328/plotarea",   // url  重要  必須要改
             { "vertex"   : "DELETE",
               "alias":"{{name}}",
-              "FenceName": Del_FenceName},
+              "FenceName": Del_FenceName,
+              "oldName":"",
+            },
               function(data, status, jqXHR) {// success callback
 		        alert('status : ' + status + ',\nFenceName : ' + JSON.stringify(Del_FenceName) + " is been deleted");
 			});
@@ -177,15 +183,40 @@
     $("input#Save").click(function (){
         var FenceName = $('#FenceName').val();
         var vertex = JSON.stringify(all_point_x_y[box_number-1]);
-        FenceNameList.push(FenceName)
+
+        // 更名模式
+        if (DeleteNumber != 0){                                     
+            point_x_y=[];
+            point_x = [];                                           // 把剛剛的點刪掉
+            point_y = [];                                           // 把剛剛的點刪掉        
+            mouse_times  = 0;                                       // 重新開始
+
+            oldName = FenceNameList[DeleteNumber-1]                 // 紀錄舊的名稱
+            FenceNameList.splice(DeleteNumber-1,1);                 // 刪除舊的名稱在LIST 內的位置
+            vertex ="Rename"
+            DeleteNumber = 0;
+        }
+
+        // 若名字為空，則給予預設格式
+        if (FenceName == ""){
+            let date = new Date();
+            dataValues = String(date.getMonth() + 1) + "_" + String(date.getDate()) + "_" +  String(date.getHours()) + ":" +  String(date.getMinutes()) + ":" + String(date.getSeconds()) 
+            FenceName = dataValues
+        }
+
+        FenceNameList.push(FenceName)                          // 加入NameList
+
         $.post("http://panettone.iottalk.tw:10328/plotarea",   // url  重要  必須要改
             { "vertex"   : vertex,
               "alias":"{{name}}",
-              "FenceName": FenceName},
+              "FenceName": FenceName,
+              "oldName": oldName},
 
-              function(data, status, jqXHR) {// success callback
-		        alert('status: ' + status + ',\nFenceName: ' + FenceName+"\npoint:"+vertex);
-			});
+            //   function(data, status, jqXHR) {// success callback
+		    //     alert('status: ' + status + ',\nFenceName: ' + FenceName+"\npoint:"+vertex +"\noldName:"+oldName);
+			// }
+            );
+            setTimeout(function(){location.reload()},500);
     });
 
 
@@ -283,6 +314,19 @@
             };
         });
     }
+
+    function check_Input(){
+        let prevVal = "";
+        document.querySelector('input').addEventListener('input', function(e){
+            if(this.checkValidity()){
+                prevVal = this.value;
+            } 
+            else {
+                this.value = prevVal;
+            }
+        });
+    }
+
 </script>
 </html>
 

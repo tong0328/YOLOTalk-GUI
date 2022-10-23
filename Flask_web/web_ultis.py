@@ -4,7 +4,7 @@ import sys
 import json
 import cv2
 import numpy as np
-
+import time
 
 # import below is jim's YOLOtalk code
 import sys
@@ -52,7 +52,8 @@ def transform_vertex(old_vertex):
 
 
 def gen_frames(yolo):
-
+    time.sleep(0.5)
+    print("========YOLO 讀取中========")
     filepath = "static/Json_Info/camera_info_" + str(yolo.alias) + ".json"
     with open(filepath, 'r', encoding='utf-8') as f:                    
         Jdata = json.load(f)
@@ -72,7 +73,7 @@ def gen_frames(yolo):
         frame = draw_polylines(frame, vertex)  # draw the polygon
 
         if  len(yolo.detect_target) != 0 :
-            
+            print(f"[detect_target] {yolo.detect_target}")
             detect_target = 0
             mask = np.zeros((frame.shape), dtype = np.uint8)
             pts = []
@@ -87,7 +88,7 @@ def gen_frames(yolo):
             frame =  0.5 * mask + frame  
 
         else:
-            if detect_target < 5 :
+            if detect_target < 3 :
                 mask = np.zeros((frame.shape), dtype = np.uint8)
                 pts = []
 

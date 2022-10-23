@@ -1,0 +1,29 @@
+{
+    "alias":"test",
+
+    "viedo_url":"rtsp://nckuiot4:nckuiot@iot.truesenseworld.com:45544/stream1",
+
+    "add_time":"Nov 18 21:52:36",
+
+    "fence":{
+        "F1":{
+            "vertex":"[731,836,1220,146,1430,263,1017,932,731,836]",
+
+            "Group":"-",
+
+            "Alarm_Level":"General",
+
+            "Note":" - ",
+
+            "Sensitivity":"0.5",
+
+            "Schedule":{
+                "1":{
+                    "Start_time":"--:--",
+
+                    "End_time":"--:--"
+                }
+            }
+        }
+    }
+}

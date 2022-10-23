@@ -19,15 +19,6 @@
     img{
         max-width: 100%;
     }
-    /*    ______________ 按鈕設定 ______________   */
-    .btn{
-        background-color: #b1d3f5;
-        color: rgb(116 109 109);
-        font-size: 20px;
-        margin-top: -3px;
-        text-align: right;
-    }
-
     /*    ______________ 大看板上的選單 ______________   */
     nav img{
         width: 200px;
@@ -80,14 +71,6 @@
 {% block intro %}      
 <section id="intro">
     <div class="jumbotron" >
-        
-        <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-          <option selected>以Fence、Group、Alias分類 (尚未完成)</option>
-          <option value="1">Fence</option>
-          <option value="2">Group</option>
-          <option value="3">Alias</option>
-        </select>
-        
         <table id="schudule_table"  class="table table-dark" data-url="static/camera_info.json" data-height="299">
             <thead>
               <tr>
@@ -168,6 +151,7 @@
 {% endblock %}
 
 
+
 {% block script %}
 <script>
     
@@ -183,9 +167,10 @@
         });
         check_th()
         check_tr()
-    });
-    
 
+    });
+
+    
     //  Schedule time Modal
     function Add_Time_Modal(th){
         var title = document.getElementById("title")

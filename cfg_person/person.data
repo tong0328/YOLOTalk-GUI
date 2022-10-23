@@ -1,6 +1,0 @@
-classes= 1
-train  = /home/jim93073/SmartFence_py/cfg_person/train_person_gray.txt
-valid  = /home/jim93073/SmartFence_py/cfg_person/test_person_gray.txt
-names = /home/jim93073/SmartFence_py/cfg_person/person.names
-backup = /home/jim93073/darknet/backup/
-
