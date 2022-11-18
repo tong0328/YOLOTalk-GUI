@@ -83,6 +83,7 @@
         border-radius: 5px;
         color: black;
     }
+
 </style>
 {% endblock %}
 
@@ -102,7 +103,7 @@
                                     <h4>RTSP URL:</h4>
                                 </div>
                                 <div class="col-8">
-                                    <input name="URL" type="text" class="form-control" placeholder="Please Enter rtsp URL" aria-label="With textarea" required></input>
+                                    <input name="URL" type="text" class="form-control" placeholder="Please Enter rtsp URL"  aria-label="With textarea" ></input>
                                 </div>
                             </div>
                             <div class="row justify-content-center" >
@@ -110,12 +111,12 @@
                                     <h4>Fence name:</h4>
                                 </div>
                                 <div class="col-8">
-                                    <input name="area" type="text" class="form-control" placeholder="Please Enter name of fence" aria-label="With textarea" required></input>
+                                    <input name="area" type="text" class="form-control" placeholder="Please Enter name of fence"  aria-label="With textarea" pattern="[a-zA-Z0-9_]*" title="Fence name only allow a~z、A~Z、0~9、_  "></input>
                                 </div>                                         
                             </div>
                             <div class="row justify-content-end">
                                 <div class="col-2">
-                                    <input class="btn btn-primary" type="submit" value="SAVE"  onclick="successfulSubmit()"> 
+                                    <input class="btn btn-primary" type="submit" value="SAVE"  onclick="Open_IMG()"> 
                                 </div>
                             </div>
                       </form>
@@ -123,72 +124,92 @@
             </div>
     </div>
 </section>
+<!-- 串流成功等待 Modal -->
+<div class="modal fade" id="OpenCV_Wait_Modal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" >
+        <div class="modal-content">
+            <div class="modal-header">
+            <h4 class="modal-title" id="Del_fence_Modal" >System message:</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true" >&times;</span>
+            </div>
+            <div class="modal-body">
+            <h5 id="text" style="font-size: 20px; "> OPENCV 影像串流中，請稍後...</h5>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- 串流失敗 Modal -->
+<div class="modal fade" id="OpenCV_Fail_Modal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h4 class="modal-title" id="Del_fence_Modal" >System message: </h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true" >&times;</span>
+            </div>
+            <div class="modal-body">
+            <h5 id="text" style="font-size: 20px; "> OpenCV 影像串流失敗, 請重新檢查RTSP網址.</h5>
+            </div>
+
+        </div>
+    </div>
+</div>
 {% endblock %}
 {% block script %}
 <script>
-    function customizeWindowEvent() {
-        var popup_window = document.getElementById("input");
-        popup_window.style.display = "block";
-    }
-    function display_off() {
-        var popup_window = document.getElementById("input");
-        popup_window.style.display = "none";
-    }
-    function Open_IMG() { 
-        var formElement = document.getElementById("rtsp");
-        var camera = formElement[0].value;
-        var URL = formElement[1].value;
-        document.getElementById(camera).src=URL;
-        alert('新增成功,\n '+camera+' 號攝影機已經串流下列網址: '+URL);  
-    }
-    function successfulSubmit(){
-        //let object = {};
-        rtsp  = document.getElementById("rtsp")[1].value;
-        name  = document.getElementById("rtsp")[2].value;
-       alert( "input URL : "+rtsp+"\ninput name : "+name);
-    }
-    function check(){ 
-        str = rtsp.URL.value;               // input 的URL
-        str = str.match(/rtsp:\/\/.+/); 
 
-
-        fetch("../static/Json_Info/camera_info_0943.json")
-        .then(response => {
-            return response.json();
-        })
-        .then(jsondata => console.log(jsondata));
-        if (str == null){ 
-        alert('The RTSP URL is valid. Please check again!'); 
-        return false; 
-        }
-        else{ 
-        alert("你输入的URL有效"); 
-        successfulSubmit(); 
-        } 
-    } 
+    Show_OpenCV_Fail_Modal = "{{alert}}"
 
     $(document).ready(function(){
         $("a#replot_fence").click(function(){
             fence = this.text
             FormName = "Form_"+fence
             document.getElementById(FormName).submit()
-
         });
-    });
-    // $("button").click(function(){
-    // //                var regExp = /,/;
-    // var text = $("input").val();
-    //         var pattern = new RegExp("[`~!@#$^&*()=|{}';',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？%]");
-    //         var result = text.match(pattern);
-    //         if (!result)
-    //         {
-    //             $("#content").append(text+"<br>");
-    //             $("input").val("");
-    //         }else{
 
-    //         alert("含有特殊字元")
-    //     }
-    // });
+        if (Show_OpenCV_Fail_Modal == "True"){
+            $('#OpenCV_Fail_Modal').modal() 
+            Show_OpenCV_Fail_Modal == "False"
+        }
+    });
+
+
+    function customizeWindowEvent() {
+        var popup_window = document.getElementById("input");
+        popup_window.style.display = "block";
+    }
+
+
+    function display_off() {
+        var popup_window = document.getElementById("input");
+        popup_window.style.display = "none";
+    }
+
+    
+    function Open_IMG() { 
+        var formElement = document.getElementById("rtsp");
+        var camera = formElement[0].value;
+        var URL = formElement[1].value;
+        $("#OpenCV_Wait_Modal").modal()
+        // alert('新增成功,\n '+camera+' 號攝影機已經串流下列網址: '+URL);  
+    }
+
+
+    function successfulSubmit(){
+
+        rtsp  = document.getElementById("rtsp")[1].value;
+        name  = document.getElementById("rtsp")[2].value;
+        alert( "123321測試測試input URL : "+rtsp+"\ninput name : "+name);
+    }
+
+
+    function show_OpenCV_Fail_Modal(){ 
+        $('#OpenCV_Fail_Modal').modal() 
+    } 
+
 
 </script>
 {% endblock %}

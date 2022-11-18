@@ -22,13 +22,13 @@ app = Flask(__name__)
 
 
 # Restart YoloDevice
-
+# print("=======================time============= ",time.time())
 
 def Restart_YoloDevice():
     oldJson = os.listdir(r"static/Json_Info")
     actived_yolo = {}
     for j in oldJson :
-        if "ipynb" in j:
+        if ".json" not in j:
             continue
 
         path = os.path.join("static/Json_Info", j)
@@ -53,26 +53,31 @@ def Restart_YoloDevice():
                 # sensitivity
                 old_sensitivity = float(Jdata["fence"][key]["Sensitivity"])
 
-                yolo1 = YoloDevice(
-                                config_file = '../darknet/cfg/yolov4-tiny.cfg',
-                                data_file = '../darknet/cfg/coco.data',
-                                weights_file = '../weights/yolov4-tiny.weights',
-                                thresh = old_sensitivity,                 
-                                output_dir = './static/record/',              
-                                video_url = URL,              
-                                is_threading = True,          
-                                vertex = new_vertex,                 
-                                alias = alias,                
-                                display_message = True,
-                                obj_trace = True,        
-                                save_img = False,
-                                save_video = False,           
-                                target_classes = ["person"],
-                                auto_restart = False,
-                                )    
-                yolo1.set_listener(on_data)
-                yolo1.start()
-                actived_yolo[alias] = yolo1
+
+
+            yolo1 = YoloDevice(
+                            config_file = '../darknet/cfg/yolov4-tiny.cfg',
+                            data_file = '../darknet/cfg/coco.data',
+                            weights_file = '../weights/yolov4-tiny.weights',
+                            thresh = old_sensitivity,                 
+                            output_dir = './static/record/',              
+                            video_url = URL,              
+                            is_threading = True,          
+                            vertex = vertex,                 
+                            alias = alias,                
+                            display_message = True,
+                            obj_trace = True,        
+                            save_img = False,
+                            save_video = False,           
+                            target_classes = ["person"],
+                            auto_restart = False,
+                            )    
+
+
+            yolo1.set_listener(on_data)
+            yolo1.start()
+            actived_yolo[alias] = yolo1
+            print(f"[ YoloDevice vertex ] {yolo1.vertex}")
         # ======== FOR YOLO ========
     return actived_yolo
 actived_yolo = Restart_YoloDevice()
@@ -94,57 +99,63 @@ def home():
             return render_template('plotarea.html', data=IMGpath, name=str(alias), shape=shape)
 
         else:    
-
+            # time.sleep(2)   # 避免opencv反應慢
+            # print("Connecting URL...")
             fig = cv2.VideoCapture(str(URL))
             stat, I = fig.read()
+            if stat == False :
+                
+                # read again
+                print("opencv 串流失敗，請重新檢查網址",stat)
+                return render_template('home.html', navs = all_fences_names , alert = True)
+            if stat == True :
+                # Temporary information
+                data  = {"alias":"",
+                        "viedo_url":"",
+                        "add_time":"",
+                        "fence": {}
+                        }
 
-            # Temporary information
-            data  = {"alias":"",
-                    "viedo_url":"",
-                    "add_time":"",
-                    "fence": {}
-                    }
+                data["alias"]     = alias
+                data["viedo_url"] = URL
+                data["add_time"]  = Addtime
+                
 
-            data["alias"]     = alias
-            data["viedo_url"] = URL
-            data["add_time"]  = Addtime
+                filepath = "static/Json_Info/camera_info_" + data["alias"] + ".json"
+                with open(filepath, 'w', encoding='utf-8') as file:             
+                    json.dump(data, file,separators=(',\n', ':'),indent = 4)
             
+            
+                IMGpath = "static/alias_pict/"+str(alias)+".jpg"
+                all_fences_names.append(str(alias))
+                cv2.imwrite(IMGpath,I)
 
-            filepath = "static/Json_Info/camera_info_" + data["alias"] + ".json"
-            with open(filepath, 'w', encoding='utf-8') as file:             
-                json.dump(data, file,separators=(',\n', ':'),indent = 4)
-        
-        
-            IMGpath = "static/alias_pict/"+str(alias)+".jpg"
-            all_fences_names.append(str(alias))
-            cv2.imwrite(IMGpath,I)
-
-    # ======== FOR YOLO ========
-            yolo1 = YoloDevice(
-                    config_file = '../darknet/cfg/yolov4-tiny.cfg',
-                    data_file = '../darknet/cfg/coco.data',
-                    weights_file = '../weights/yolov4-tiny.weights',
-                    thresh = 0.3,                 # need modify (ok)
-                    output_dir = './static/record/',              
-                    video_url = URL,              # need modify (ok) 
-                    is_threading = True,          # rtsp  ->true  video->false (ok)
-                    vertex = None,                # need modify (ok)    
-                    alias = alias,                  # need modify (ok)
-                    display_message = True,
-                    obj_trace = True,        
-                    save_img = False,
-                    save_video = False,           # modify to False
-                    target_classes = ["person"],
-                    auto_restart = False,
-                    )    
-            yolo1.set_listener(on_data)
-            yolo1.start()
-            actived_yolo[alias] = yolo1
-    # ======== FOR YOLO ========
-        
-            return render_template('plotarea.html', data = IMGpath, name=str(alias), shape = I.shape)
+        # ======== FOR YOLO ========
+                yolo1 = YoloDevice(
+                        config_file = '../darknet/cfg/yolov4-tiny.cfg',
+                        data_file = '../darknet/cfg/coco.data',
+                        weights_file = '../weights/yolov4-tiny.weights',
+                        thresh = 0.5,                 # need modify (ok)
+                        output_dir = './static/record/',              
+                        video_url = URL,              # need modify (ok) 
+                        is_threading = True,          # rtsp  ->true  video->false (ok)
+                        vertex = None,                # need modify (ok)    
+                        alias = alias,                  # need modify (ok)
+                        display_message = True,
+                        obj_trace = True,        
+                        save_img = False,
+                        save_video = False,           # modify to False
+                        target_classes = ["person"],
+                        auto_restart = False,
+                        )    
+                yolo1.set_listener(on_data)
+                yolo1.start()
+                actived_yolo[alias] = yolo1
+        # ======== FOR YOLO ========
+            
+                return render_template('plotarea.html', data = IMGpath, name=str(alias), shape = I.shape)
      
-    return render_template('home.html', navs = all_fences_names)
+    return render_template('home.html', navs = all_fences_names, alert = False)
     
 
 
@@ -160,8 +171,12 @@ def plotarea():
         alias = request.form['alias']
         FenceName = request.form['FenceName']   # plot name
         vertex = request.form['vertex']         # plot point
-
-        IMGpath, shape =  replot(alias, URL, Addtime)
+        oldName = request.form['oldName']       # oldName
+        
+        IMGpath = "static/alias_pict/"+str(alias)+".jpg"
+        filepath = "static/Json_Info/camera_info_" + str(alias) + ".json"
+        fig = cv2.imread(IMGpath)
+        shape = fig.shape
 
         Fence_info={'vertex':vertex,
                     'Group':'-',                
@@ -173,14 +188,15 @@ def plotarea():
                                }
                    }
      
-        filepath = "static/Json_Info/camera_info_" + str(alias) + ".json"
-        print("Json File Path : " , filepath)
+
         if os.path.isfile(filepath):                                        # If file is exist
             with open(filepath, 'r', encoding='utf-8') as f:                
                 Jdata = json.load(f)
-
             if vertex == "DELETE" :
-                Jdata["fence"].pop(FenceName)                              
+                Jdata["fence"].pop(FenceName)     
+            elif vertex == "Rename" :
+                Jdata["fence"][FenceName] = Jdata["fence"][oldName]         # copy
+                Jdata["fence"].pop(oldName)                                 # del
             else:
                 Jdata["fence"][FenceName]=Fence_info                        
                 # ======== FOR YOLO ========
@@ -190,7 +206,8 @@ def plotarea():
                 actived_yolo[alias].vertex = data
                 print(f"alias:{alias}")
                 print(actived_yolo[alias].vertex)
-                # ======== FOR YOLO ======== 
+                # ======== FOR YOLO ========
+
             with open(filepath, 'w', encoding='utf-8') as file:             
                 json.dump(Jdata, file,separators=(',\n', ':'),indent = 4)
             
@@ -218,10 +235,10 @@ def management():
         URL     = request.form.get('URL')        
         Addtime = str(time.asctime( time.localtime(time.time()) ))[4:-5]
         
-        IMGpath, shape =  replot(alias, URL, Addtime)
+        
         
         if URL =="REPLOT":
-            
+            IMGpath, shape =  replot(alias, URL, Addtime)
             return render_template('plotarea.html', data=IMGpath, name=str(alias), shape=shape)
 
         if (URL == "Edit"):
@@ -398,14 +415,9 @@ def video_feed(order):
         return 'Error'
 
 
-@app.route('/test',methods=[ 'GET','POST'])
-def test():
-    
-    return render_template('base.html', )
-
 @app.route('/base2',methods=[ 'GET','POST'])
 def base2():
     
     return render_template('test_base.html', )  
 if __name__ == '__main__':
-    app.run(debug = True, host="0.0.0.0",port="10328")
+    app.run(debug = True, use_reloader=False ,host="0.0.0.0",port="10328")
