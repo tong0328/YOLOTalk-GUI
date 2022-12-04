@@ -9,6 +9,7 @@ import os
 import jinja2
 
 from web_ultis import *
+from config import Config
 # import below is jim's YOLOtalk code
 import sys
 sys.path.append("..") 
@@ -17,69 +18,13 @@ from darknet import darknet
 from libs.utils import *
 
 
+
+
+
 app = Flask(__name__)
 
 
-
 # Restart YoloDevice
-# print("=======================time============= ",time.time())
-
-def Restart_YoloDevice():
-    oldJson = os.listdir(r"static/Json_Info")
-    actived_yolo = {}
-    for j in oldJson :
-        if ".json" not in j:
-            continue
-
-        path = os.path.join("static/Json_Info", j)
-        with open(path, 'r', encoding='utf-8') as f:             
-            Jdata = json.load(f)
-
-        alias = Jdata["alias"]
-        URL   = Jdata["viedo_url"]
-
-        if Jdata["fence"]  == {}:
-            vertex = None
-
-        else:
-            key_list = list(Jdata["fence"].keys())
-            vertex = {}
-
-            for key in key_list :
-                old_vertex = Jdata["fence"][key]["vertex"][1:-1]
-                # vertex
-                new_vertex = transform_vertex(old_vertex)
-                vertex[key] = new_vertex 
-                # sensitivity
-                old_sensitivity = float(Jdata["fence"][key]["Sensitivity"])
-
-
-
-            yolo1 = YoloDevice(
-                            config_file = '../darknet/cfg/yolov4-tiny.cfg',
-                            data_file = '../darknet/cfg/coco.data',
-                            weights_file = '../weights/yolov4-tiny.weights',
-                            thresh = old_sensitivity,                 
-                            output_dir = './static/record/',              
-                            video_url = URL,              
-                            is_threading = True,          
-                            vertex = vertex,                 
-                            alias = alias,                
-                            display_message = True,
-                            obj_trace = True,        
-                            save_img = False,
-                            save_video = False,           
-                            target_classes = ["person"],
-                            auto_restart = False,
-                            )    
-
-
-            yolo1.set_listener(on_data)
-            yolo1.start()
-            actived_yolo[alias] = yolo1
-            print(f"[ YoloDevice vertex ] {yolo1.vertex}")
-        # ======== FOR YOLO ========
-    return actived_yolo
 actived_yolo = Restart_YoloDevice()
 
 @app.route('/',methods=[ 'GET','POST'])
@@ -90,24 +35,26 @@ def home():
     if request.method == 'POST':
 
         alias  = request.form.get('area')
-        URL        = request.form.get('URL')        
+        URL     = str(request.form.get('URL'))
         Addtime = str(time.asctime( time.localtime(time.time()) ))[4:-5]
+        print(f"Home Page")
+        print(f"alias :\t{alias}")
+        print(f"URL :\t{URL}")
+        print(f"Addtime :\t{Addtime}")
 
-        
         if URL =="REPLOT":
             IMGpath, shape =  replot(alias, URL, Addtime)
             return render_template('plotarea.html', data=IMGpath, name=str(alias), shape=shape)
 
         else:    
-            # time.sleep(2)   # 避免opencv反應慢
-            # print("Connecting URL...")
-            fig = cv2.VideoCapture(str(URL))
+            time.sleep(1)   # 避免opencv反應慢
+            print("Connecting URL...")
+            fig = cv2.VideoCapture(URL)
             stat, I = fig.read()
-            if stat == False :
-                
-                # read again
-                print("opencv 串流失敗，請重新檢查網址",stat)
-                return render_template('home.html', navs = all_fences_names , alert = True)
+            fail_number = 0
+
+            # if stat == False :
+
             if stat == True :
                 # Temporary information
                 data  = {"alias":"",
@@ -141,28 +88,32 @@ def home():
                         is_threading = True,          # rtsp  ->true  video->false (ok)
                         vertex = None,                # need modify (ok)    
                         alias = alias,                  # need modify (ok)
-                        display_message = True,
+                        display_message = False,
                         obj_trace = True,        
                         save_img = False,
                         save_video = False,           # modify to False
                         target_classes = ["person"],
                         auto_restart = False,
-                        )    
+                        )
+                print(f"\n======== Activing YOLO , alias:{alias}========\n")    
                 yolo1.set_listener(on_data)
                 yolo1.start()
                 actived_yolo[alias] = yolo1
         # ======== FOR YOLO ========
             
                 return render_template('plotarea.html', data = IMGpath, name=str(alias), shape = I.shape)
-     
+
     return render_template('home.html', navs = all_fences_names, alert = False)
     
-
 
 @app.route('/plotarea',methods=[ 'GET','POST'])
 def plotarea():
 
     all_fences_names = read_all_fences()
+    if Config["host"] == "0.0.0.0":
+        postURL = os.path.join("http://panettone.iottalk.tw"  + ":" + Config["port"] + "/plotarea")
+    else:
+        postURL = os.path.join("http://"+ Config["host"]  + ":" + Config["port"] + "/plotarea")
 
     if request.method == 'POST':
         
@@ -188,7 +139,6 @@ def plotarea():
                                }
                    }
      
-
         if os.path.isfile(filepath):                                        # If file is exist
             with open(filepath, 'r', encoding='utf-8') as f:                
                 Jdata = json.load(f)
@@ -200,12 +150,11 @@ def plotarea():
             else:
                 Jdata["fence"][FenceName]=Fence_info                        
                 # ======== FOR YOLO ========
+                print(f"\n======== Editing YOLO vertexs, alias:{alias} ,vertex:{actived_yolo[alias].vertex}========\n")
                 old_vertex = vertex[1:-1]
                 new_vertex = transform_vertex(old_vertex)
                 data = { FenceName : new_vertex }
                 actived_yolo[alias].vertex = data
-                print(f"alias:{alias}")
-                print(actived_yolo[alias].vertex)
                 # ======== FOR YOLO ========
 
             with open(filepath, 'w', encoding='utf-8') as file:             
@@ -213,29 +162,30 @@ def plotarea():
             
         else:                                                               
             print("\nFile doesn't exist !! \n")
-                                  # 
             data["fence"][FenceName]=Fence_info                             
             with open(filepath, 'w', encoding='utf-8') as f:                
                 json.dump(data, f,separators=(',\n', ':'),indent = 4)
             data['fence']={}                                                
 
 
-    return render_template('plotarea.html', data=IMGpath, name=str(alias), shape=shape)
-
+    return render_template('plotarea.html', data=IMGpath, name=str(alias), shape=shape, postURL=postURL)
 
 
 @app.route('/management',methods=[ 'GET','POST'])
 def management():
 
     all_fences_names = read_all_fences()
+    if Config["host"] == "0.0.0.0":
+        postURL = os.path.join("http://panettone.iottalk.tw"  + ":" + Config["port"] + "/management")
+    else:
+        postURL = os.path.join("http://"+ Config["host"]  + ":" + Config["port"] + "/management")
+
     # nav Replot 
     if request.method == 'POST' :
 
         alias   = request.form.get('area')
         URL     = request.form.get('URL')        
         Addtime = str(time.asctime( time.localtime(time.time()) ))[4:-5]
-        
-        
         
         if URL =="REPLOT":
             IMGpath, shape =  replot(alias, URL, Addtime)
@@ -271,7 +221,6 @@ def management():
             return render_template('management.html', navs=all_fences_names)
 
         if (URL == "Delete"):    
-            print("Enter Delete")
             
             alias       = request.form.get('alias')
             FenceName   = request.form.get('FenceName')
@@ -300,7 +249,7 @@ def management():
             with open(path, 'r', encoding='utf-8') as f:
                 file = json.load(f)
                 items.append(file)
-    return render_template('management.html', navs=all_fences_names, items=items)
+    return render_template('management.html', navs=all_fences_names, items=items, postURL=postURL)
 
 
 @app.route('/streaming',methods=[ 'GET','POST'])
@@ -320,7 +269,9 @@ def streaming():
             return render_template('plotarea.html', data=IMGpath, name=str(alias), shape=shape)
 
     alias_list = os.listdir(r'static/alias_pict')
-    alias_list.remove('.ipynb_checkpoints')
+
+    if ".ipynb_checkpoints" in alias_list :
+        alias_list.remove('.ipynb_checkpoints')
 
     return render_template('streaming.html', navs=all_fences_names, alias_list=alias_list, length=len(alias_list))
 
@@ -330,6 +281,10 @@ def schedule():
     
     all_fences_names = read_all_fences()
 
+    if Config["host"] == "0.0.0.0":
+        postURL = os.path.join("http://panettone.iottalk.tw"  + ":" + Config["port"] + "/plotarea")
+    else:
+        postURL = os.path.join("http://"+ Config["host"]  + ":" + Config["port"] + "/plotarea")
     if request.method == 'POST' :
 
         alias   = request.form.get('area')
@@ -399,13 +354,14 @@ def schedule():
                 file = json.load(f)
                 items.append(file)
   
-    return render_template('schedule.html', navs=all_fences_names, items=items)
+    return render_template('schedule.html', navs=all_fences_names, items=items, postURL=postURL)
 
 
 @app.route('/video/<order>',methods=[ 'GET','POST'])
 def video_feed(order):
     alias_list = os.listdir(r'static/alias_pict')
-    alias_list.remove('.ipynb_checkpoints')
+    if ".ipynb_checkpoints" in alias_list :
+        alias_list.remove('.ipynb_checkpoints')
 
     if len(actived_yolo) > int(order) : 
         print(f"actived_yolo len = {len(actived_yolo)} , order = {order}")
@@ -414,10 +370,6 @@ def video_feed(order):
     else:
         return 'Error'
 
-
-@app.route('/base2',methods=[ 'GET','POST'])
-def base2():
-    
-    return render_template('test_base.html', )  
+ 
 if __name__ == '__main__':
-    app.run(debug = True, use_reloader=False ,host="0.0.0.0",port="10328")
+    app.run(debug=Config["DEBUG"], use_reloader=Config["use_reloader"] , host=Config["host"], port=Config["port"])

@@ -240,7 +240,7 @@
         var start_time = document.getElementById("start_time").value
         var end_time   = document.getElementById("end_time").value
 
-        $.post("http://panettone.iottalk.tw:10328/schedule",   // url
+        $.post( "{{postURL}}",   
             {   "URL":"Edit_time",
                 "alias": title.split(" ")[3],
                 "FenceName":title.split(" ")[4],
@@ -262,7 +262,7 @@
     
 
     function del_confirm(){
-        $.post("http://panettone.iottalk.tw:10328/schedule",   // url
+        $.post( "{{postURL}}",   
             {   "URL":"Delete_Schedule",
                 "alias": del_id.split(" ")[0],
                 "FenceName":del_id.split(" ")[1],

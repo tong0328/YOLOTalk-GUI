@@ -167,7 +167,7 @@
         mouse_times  = 0;                                       // 重新開始
         DeleteNumber = 0;
  
-        $.post("http://panettone.iottalk.tw:10328/plotarea",   // url  重要  必須要改
+        $.post("{{postURL}}",   
             { "vertex"   : "DELETE",
               "alias":"{{name}}",
               "FenceName": Del_FenceName,
@@ -206,17 +206,16 @@
 
         FenceNameList.push(FenceName)                          // 加入NameList
 
-        $.post("http://panettone.iottalk.tw:10328/plotarea",   // url  重要  必須要改
+        $.post("{{postURL}}",   
             { "vertex"   : vertex,
               "alias":"{{name}}",
               "FenceName": FenceName,
               "oldName": oldName},
 
-            //   function(data, status, jqXHR) {// success callback
-		    //     alert('status: ' + status + ',\nFenceName: ' + FenceName+"\npoint:"+vertex +"\noldName:"+oldName);
-			// }
+              function(data, status, jqXHR) {// success callback
+		        alert('status : ' + status + ',\nFenceName : ' + FenceName+"\npoint : "+vertex +"\noldName : "+oldName);
+			}
             );
-            setTimeout(function(){location.reload()},500);
     });
 
 

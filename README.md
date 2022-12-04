@@ -1,12 +1,13 @@
 # YoloTalk install tutorial
 
 
-## Step 1. 下載 YoloTalk 檔案 (此步驟請參考健菖YOLOTalk 流程)
+## Step 1. 下載 YoloTalk 檔案 
+(此步驟請參考健菖YOLOTalk 流程 : https://hackmd.io/@jim93073/BJlB3lN1q)
 ```bash=
-git clone https://github.com/jim93073/YoloTalk.git
+git clone https://github.com/IoTtalk/tainan-ai-yolotalk.git
 
-cd YoloTalk
-git clone https://github.com/adipandas/multi-object-tracker.git
+cd tainan-ai-yolotalk
+git clone https://github.com/jim93073/multi-object-tracker.git
 git clone https://github.com/AlexeyAB/darknet.git
 ```
 
@@ -17,35 +18,34 @@ git clone https://github.com/AlexeyAB/darknet.git
 ----- YOLOTalk-GUI
   |
   |-- libs (健菖的YOLO檔案)
-  |        |
-  |        |--YOLO_SSIM.py
-  |        |--YOLO.py
-  |        |--utils.py
+  |    |
+  |    |--YOLO_SSIM.py
+  |    |--YOLO.py
+  |    |--utils.py
   |
   |--darknet  
   |--multi-object-tracker
   |--weights
   |--cfg_person
-  |--Flask_web ★★★
-           |
-           |--YOLOTalk.py  (Flask)
-                   |--templates
-                   |--static
-                        |--Json_Info
-                        |--alias_pict
-                        |--record
+  |--YOLOTalk-GUI ★★★
+       |
+       |--YOLOTalk.py  (Flask)
+       |--config.py
+       |--templates
+       |--static
+            |--Json_Info
+            |--alias_pict
+            |--record
 ```                        
                         
 ## Step 3. 安裝套件並修改參數 
 
 修改 YOLOTalk.py 內的 
-1.app.run 內的 host、port 參數
-2.import YoloDevice 所需的 YOLO_SSIM.py、libs 資料夾
-3.修改各 html 內的 POST 參數
+1.config.py 內的 host、port 參數
 
 
 ## 其餘資料夾說明 
 
-1. Flask_web/static/Json_Info  : 放置各個圍籬紀錄參數檔案
-2. Flask_web/static/alias_pict : 放置各個圍籬所擷取圖片，用於 plotarea 功能繪製圍籬的底圖
-3. Flask_web/static/record     : 放置 YOLO_SSIM.py 所記錄之照片、圖片
+1. YOLOTalk-GUI/static/Json_Info  : 放置各個圍籬紀錄參數檔案
+2. YOLOTalk-GUI/static/alias_pict : 放置各個圍籬所擷取圖片，用於 plotarea 功能繪製圍籬的底圖
+3. YOLOTalk-GUI/static/record     : 放置 YOLO_SSIM.py 所記錄之照片、圖片

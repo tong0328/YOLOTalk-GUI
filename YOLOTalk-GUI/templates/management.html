@@ -383,7 +383,7 @@
         var Note        = document.getElementById('message-text-Notes')
         var Sensitivity = document.getElementById('message-text-Sensitivity')
 
-        $.post("http://panettone.iottalk.tw:10328/management",   // url
+        $.post( "{{postURL}}",   
             {   "URL":"Edit",
                 "alias": Name.innerText.split(" ")[2],
                 "FenceName":Name.innerText.split(" ")[3], 
@@ -400,7 +400,7 @@
     function del_confirm(){
 
         alert(del_id)
-        $.post("http://panettone.iottalk.tw:10328/management",   // url
+        $.post( "{{postURL}}",   
             {   "URL":"Delete",
                 "alias": del_id.split(" ")[0],
                 "FenceName":del_id.split(" ")[1], 
