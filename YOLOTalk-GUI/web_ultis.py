@@ -5,10 +5,12 @@ import json
 import cv2
 import numpy as np
 import time
+from interval import Interval
 
 # import below is jim's YOLOtalk code
 import sys
 sys.path.append("..")
+sys.path.insert(1, '../multi-object-tracker') 
 from libs.YOLO_SSIM import YoloDevice 
 from darknet import darknet
 from libs.utils import *
@@ -51,22 +53,22 @@ def Restart_YoloDevice():
                 old_sensitivity = float(Jdata["fence"][key]["Sensitivity"])
 
             yolo1 = YoloDevice(
-                            config_file = '../darknet/cfg/yolov4-tiny.cfg',
-                            data_file = '../darknet/cfg/coco.data',
-                            weights_file = '../weights/yolov4-tiny.weights',
-                            thresh = old_sensitivity,                 
-                            output_dir = './static/record/',              
-                            video_url = URL,              
-                            is_threading = True,          
-                            vertex = vertex,                 
-                            alias = alias,                
-                            display_message = False,
-                            obj_trace = True,        
-                            save_img = False,
-                            save_video = False,           
-                            target_classes = ["person"],
-                            auto_restart = False,
-                            )    
+                    config_file = '../cfg_person/yolov4-tiny.cfg',
+                    data_file = '../cfg_person/coco.data',
+                    weights_file = '../weights/yolov4-tiny.weights',
+                    thresh = old_sensitivity,                 
+                    output_dir = './static/record/',              
+                    video_url = URL,              
+                    is_threading = True,          
+                    vertex = vertex,                 
+                    alias = alias,                
+                    display_message = False,
+                    obj_trace = True,        
+                    save_img = True,
+                    save_video = False,           
+                    target_classes = ["person"],
+                    auto_restart = False,
+                    )   
 
             print(f"\n======== Activing YOLO , alias:{alias}========\n")
             yolo1.set_listener(on_data)
@@ -129,37 +131,56 @@ def gen_frames(yolo):
 
             return frame
     time.sleep(0.5)
+
     print("========YOLO 影像讀取中========")
+
     filepath = f"static/Json_Info/camera_info_{str(yolo.alias)}.json"
     with open(filepath, 'r', encoding='utf-8') as f:                    
         Jdata = json.load(f)
 
-    key_list = list(Jdata["fence"].keys())
+    fence_list = list(Jdata["fence"].keys())
     vertex = {}
+    for fence in fence_list :
+        old_vertex = Jdata["fence"][fence]["vertex"][1:-1]
+        new_vertex = transform_vertex(old_vertex)
+        vertex[fence] = new_vertex
+
+    # use this to compute mask showing time    
     detect_target = 0
+
+    # judge time every minute 
+    oldtime_min =  -1
+    newtime_min =  time.localtime(time.time()).tm_min
+    print(oldtime_min)
+    print(newtime_min)
 
     while True:
         frame = yolo.get_current_frame()
-        
-        for key in key_list :
+        # judge time schedule
+        newtime_min =  time.localtime(time.time()).tm_min
+        if oldtime_min != newtime_min :
+            schedule_on_dict = time_interval(yolo)     
+            oldtime_min = newtime_min
 
-            old_vertex = Jdata["fence"][key]["vertex"][1:-1]
-            new_vertex = transform_vertex(old_vertex)
-            vertex[key] = new_vertex
-
-        frame = draw_polylines(frame, vertex)  # draw the polygon
+        # draw the polygon lines
+        frame = draw_polylines(frame, vertex)  
         mask = np.zeros((frame.shape), dtype = np.uint8)
         pts = []
 
-        # Filling mask
-        if  len(yolo.detect_target) != 0 :
-            print(f"[Detect] {yolo.detect_target[:][:2]}")
-            frame = fill_mask(True, frame, vertex, mask, pts)
-            detect_target = 0              # count mask time
-        else:
-            if detect_target < 3 :
-                frame = fill_mask(True, frame, vertex, mask, pts)
-                detect_target +=1
+        # plot mask in vertex
+        for fence in schedule_on_dict.keys():    
+
+            if schedule_on_dict[fence] == True :
+
+                # Filling mask
+                if  len(yolo.detect_target) != 0 :
+                    print(f"[Detect] {yolo.detect_target[:][:2]}")
+                    frame = fill_mask(True, frame, vertex[fence], mask, pts)
+                    detect_target = 0              # count mask time
+                else:
+                    if detect_target < 3 :
+                        frame = fill_mask(True, frame, vertex[fence], mask, pts)
+                        detect_target +=1
 
         ret, buffer = cv2.imencode('.jpg', frame)
         frame = buffer.tobytes()
@@ -168,7 +189,50 @@ def gen_frames(yolo):
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
-                    
+def time_interval(yolo):
+
+    print("Judge time schedule")
+    filepath = f"static/Json_Info/camera_info_{str(yolo.alias)}.json"
+    with open(filepath, 'r', encoding='utf-8') as f:                     
+        Jdata = json.load(f)
+
+    Fence_list = list(Jdata["fence"].keys())
+    
+    schedule_on_dict = {}
+
+    for fence in Fence_list:
+        
+        Schedule_list = list(Jdata['fence'][fence]['Schedule'].keys())
+        data = {}   # used to save every order in fence 
+
+        for Order in Schedule_list:
+            # Jdata['fence'][FenceName]['Group'] = Group
+            Start_time = Jdata['fence'][fence]['Schedule'][Order]['Start_time']  
+            End_time   = Jdata['fence'][fence]['Schedule'][Order]['End_time']    
+    
+            nowtime = time.strftime("%H:%M:%S", time.localtime())
+
+            if Start_time != "--:--" and End_time != "--:--":
+
+                now_time = Interval(nowtime, nowtime)
+                time_interval_one = Interval(Start_time, End_time)
+
+                if now_time in time_interval_one :
+                    if data == {}:
+                        data = {Order : True}
+                    else :
+                        data[Order] = True
+                else :
+                    if data == {}:
+                        data = {Order : False}
+                    else :
+                        data[Order] = False
+
+                schedule_on_dict[fence] = data
+    # print(f"now time : {now_time}")
+    # print(schedule_on_dict)
+    return schedule_on_dict
+
 
 def replot(alias, URL, Addtime):
     data  = {"alias":"",

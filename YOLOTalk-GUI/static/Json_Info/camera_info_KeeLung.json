@@ -1,0 +1,29 @@
+{
+    "alias":"KeeLung",
+
+    "viedo_url":"rtsp://nycu_iot:KEeKVENU_b8@210.240.1.225:554/cam/realmonitor?channel=1&subtype=0",
+
+    "add_time":"Dec  7 20:19:17",
+
+    "fence":{
+        "classroom":{
+            "vertex":"[225,146,401,123,456,423,796,415,1060,302,1256,383,1271,703,437,696,225,146]",
+
+            "Group":"-",
+
+            "Alarm_Level":"General",
+
+            "Note":"-",
+
+            "Sensitivity":"0.5",
+
+            "Schedule":{
+                "1":{
+                    "Start_time":"05:00",
+
+                    "End_time":"23:59"
+                }
+            }
+        }
+    }
+}

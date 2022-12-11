@@ -92,6 +92,7 @@
     </style>
     {% endblock %}
 
+    {% block header %}
     <body>
         <!--  上方列表  -->
         <header>
@@ -126,13 +127,15 @@
                             <li class="nav-item"><a class="nav-link" href="\management">Management</a></li>
                             <li class="nav-item dropdown"><a class="nav-link" href="\schedule" >Schedule</a></li>
                             <li class="nav-item"><a class="nav-link" href="\streaming">Video</a></li>
-                            <li class="nav-item"><a class="nav-link" href="\training">Training(製作中)</a>
+                            <li class="nav-item"><a class="nav-link" href="..\files">Files</a></li>
+                            <!-- <li class="nav-item"><a class="nav-link" href="\training">Training(製作中)</a> -->
                             </li>
                         </ul>
                     </div>
                 </nav>
             </div>
         </header>
+        {% endblock %} 
         <!--  大看板    --> 
         {% block intro %}              
                 <section id="intro">

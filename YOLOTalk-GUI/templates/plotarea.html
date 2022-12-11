@@ -205,7 +205,8 @@
         }
 
         FenceNameList.push(FenceName)                          // 加入NameList
-
+	alert("data {{data}}")
+	alert("postURL {{postURL}}")
         $.post("{{postURL}}",   
             { "vertex"   : vertex,
               "alias":"{{name}}",
