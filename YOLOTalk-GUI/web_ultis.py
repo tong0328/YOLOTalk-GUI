@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*
+# import below is jim's YOLOtalk code
+import sys
+sys.path.append("..")
+from libs.YOLO_SSIM import YoloDevice
+from libs.utils import * 
+from darknet import darknet
+from config import Config
+from interval import Interval
+
 import os
 import shutil
 import sys
@@ -5,17 +15,18 @@ import json
 import cv2
 import numpy as np
 import time
-from interval import Interval
+import datetime
 
-# import below is jim's YOLOtalk code
-import sys
-sys.path.append("..")
-sys.path.insert(1, '../multi-object-tracker') 
-from libs.YOLO_SSIM import YoloDevice 
-from darknet import darknet
-from libs.utils import *
+# import LineNotify
+import LineNotify_TONG
 
 
+def GET_POST_URL(url):
+    if Config["host"] == "0.0.0.0":
+        postURL = os.path.join("http://panettone.iottalk.tw:", Config["port"], f"/{url}")
+    else:
+        postURL = os.path.join("http://", Config["host"], ":", Config["port"], f"/{url}")
+    return postURL
 
 def connectOPENCV(URL : str):
     fig = cv2.VideoCapture(URL)
@@ -53,22 +64,24 @@ def Restart_YoloDevice():
                 old_sensitivity = float(Jdata["fence"][key]["Sensitivity"])
 
             yolo1 = YoloDevice(
-                    config_file = '../cfg_person/yolov4-tiny.cfg',
-                    data_file = '../cfg_person/coco.data',
-                    weights_file = '../weights/yolov4-tiny.weights',
-                    thresh = old_sensitivity,                 
-                    output_dir = './static/record/',              
-                    video_url = URL,              
-                    is_threading = True,          
-                    vertex = vertex,                 
-                    alias = alias,                
-                    display_message = False,
-                    obj_trace = True,        
-                    save_img = True,
-                    save_video = False,           
-                    target_classes = ["person"],
-                    auto_restart = False,
-                    )   
+                            config_file = '../darknet/cfg/yolov4-tiny.cfg',
+                            data_file = '../darknet/cfg/coco.data',
+                            weights_file = '../weights/yolov4-tiny.weights',
+                            thresh = old_sensitivity,                 
+                            output_dir = './static/record/',              
+                            video_url = URL,              
+                            is_threading = True,          
+                            vertex = vertex,                 
+                            alias = alias,                
+                            display_message = False,
+                            obj_trace = True,        
+                            save_img = True,
+                            img_expire_day = 1,
+                            save_video = False,
+                            video_expire_day = 1,           
+                            target_classes = ["person"],
+                            auto_restart = False,
+                            )    
 
             print(f"\n======== Activing YOLO , alias:{alias}========\n")
             yolo1.set_listener(on_data)
@@ -80,7 +93,7 @@ def Restart_YoloDevice():
 
 def read_all_fences():
     oldFences = os.listdir(r'static/alias_pict')
-    # print(f"oldFences : {oldFences}")
+    oldFences.sort()
     all_fences_names = []
     for name in oldFences :
         if "ipynb" in name:
@@ -90,22 +103,33 @@ def read_all_fences():
     
     return all_fences_names
 
-
+tmp = "19970101000000"
+tmp = datetime.datetime.strptime(tmp, "%Y%m%d%H%M%S")
 def on_data(img_path, group, alias, results): 
-
+    now = datetime.datetime.now()
+    global tmp
     for det in results:
         class_name = det[0]
         confidence = det[1]
         center_x, center_y, width, height = det[2]
         left, top, right, bottom = darknet.bbox2points(det[2])
-#             print(class_name, confidence, center_x, center_y)
-#         if len(results) > 0:            
-#             LineNotify.line_notify(class_name)   # LINENOTIFY.py  token
-#             DAN.push('yPerson-I', str(class_name), center_x, center_y, img_path)
+        ids = det[3]
+        img_path = f"http://panettone.iottalk.tw:10328/{img_path}"
+        msg = f"\n場域:{alias},\n網址:\n{img_path}"
+        if int(now.strftime("%Y%m%d%H%M%S"))>int((tmp+datetime.timedelta(seconds=3)).strftime("%Y%m%d%H%M%S")):
+            if len(results) > 0:   
+                tmp = now    
+                LineNotify_TONG.line_notify(msg)   # LINENOTIFY.py  token
+                # print(alias, img_path, ids)
+                # print(now.strftime("%Y%m%d%H%M%S"))     
+                # print(int((tmp+datetime.timedelta(seconds=10)).strftime("%Y%m%d%H%M%S")))
+                # DAN.push('yPerson-I', str(class_name), center_x, center_y, img_path)
 
 
 def transform_vertex(old_vertex):
-    # transform vertex from [x1,y1,x2,y2,x3,....]  to [(x1,y1),(x2,y2),...]
+    """
+        transform vertex from [x1,y1,x2,y2,x3,....]  to [(x1,y1),(x2,y2),...]
+    """
     new_vertex = []
     vertexs = old_vertex.split(",") 
 
@@ -116,28 +140,26 @@ def transform_vertex(old_vertex):
     return new_vertex
 
 
-
 def gen_frames(yolo):
 
-    def fill_mask(active:bool, frame, vertex:dict, mask:np.array, pts:list):
+    def fill_mask(active:bool, frame, vertex:dict, mask:np.array, pts:list, color):
         if active != False :
-            for singal_vertex in vertex.values():
-                temp =[]
-                for point in singal_vertex :
-                    temp.append(point)
-                pts.append(np.array(temp, dtype=np.int32))
-            mask = cv2.fillPoly(mask, pts, (180,0,255))     # Filling the mask of polygon 
+            # for singal_vertex in vertex.values():
+            temp =[]
+                # for point in singal_vertex :
+                    # temp.append(point)
+                # pts.append(np.array(temp, dtype=np.int32))
+            pts.append(np.array(vertex, dtype=np.int32))
+            mask = cv2.fillPoly(mask, pts, color)     # Filling the mask of polygon 
             frame =  0.5 * mask + frame
 
             return frame
+    print(f"========{yolo.alias}  YOLO 影像讀取中========")
+
     time.sleep(0.5)
-
-    print("========YOLO 影像讀取中========")
-
     filepath = f"static/Json_Info/camera_info_{str(yolo.alias)}.json"
     with open(filepath, 'r', encoding='utf-8') as f:                    
         Jdata = json.load(f)
-
     fence_list = list(Jdata["fence"].keys())
     vertex = {}
     for fence in fence_list :
@@ -151,8 +173,6 @@ def gen_frames(yolo):
     # judge time every minute 
     oldtime_min =  -1
     newtime_min =  time.localtime(time.time()).tm_min
-    print(oldtime_min)
-    print(newtime_min)
 
     while True:
         frame = yolo.get_current_frame()
@@ -167,21 +187,21 @@ def gen_frames(yolo):
         mask = np.zeros((frame.shape), dtype = np.uint8)
         pts = []
 
-        # plot mask in vertex
-        for fence in schedule_on_dict.keys():    
-
-            if schedule_on_dict[fence] == True :
-
-                # Filling mask
-                if  len(yolo.detect_target) != 0 :
-                    print(f"[Detect] {yolo.detect_target[:][:2]}")
-                    frame = fill_mask(True, frame, vertex[fence], mask, pts)
-                    detect_target = 0              # count mask time
+        # plot mask in vertex if suchedule == True
+        for fence in schedule_on_dict.keys():
+            for order in schedule_on_dict[fence].keys():
+                if schedule_on_dict[fence][order] == True:
+                    # Filling mask
+                    if  len(yolo.detect_target) != 0 :
+                        print(f"[Detect] {yolo.detect_target[:][:2]}")
+                        frame = fill_mask(True, frame, vertex[fence], mask, pts, (180, 0, 255))
+                        detect_target = 0              # count mask time
+                    else:
+                        if detect_target < 3 :
+                            frame = fill_mask(True, frame, vertex[fence], mask, pts, (180, 0, 255))
+                            detect_target +=1
                 else:
-                    if detect_target < 3 :
-                        frame = fill_mask(True, frame, vertex[fence], mask, pts)
-                        detect_target +=1
-
+                    frame = fill_mask(True, frame, vertex[fence], mask, pts, (255, 255, 255))
         ret, buffer = cv2.imencode('.jpg', frame)
         frame = buffer.tobytes()
 
@@ -190,14 +210,10 @@ def gen_frames(yolo):
 
 
 def time_interval(yolo):
-
-    print("Judge time schedule")
     filepath = f"static/Json_Info/camera_info_{str(yolo.alias)}.json"
     with open(filepath, 'r', encoding='utf-8') as f:                     
         Jdata = json.load(f)
-
     Fence_list = list(Jdata["fence"].keys())
-    
     schedule_on_dict = {}
 
     for fence in Fence_list:
@@ -227,10 +243,14 @@ def time_interval(yolo):
                         data = {Order : False}
                     else :
                         data[Order] = False
-
                 schedule_on_dict[fence] = data
-    # print(f"now time : {now_time}")
-    # print(schedule_on_dict)
+
+            if Start_time == "--:--" and End_time == "--:--":
+                if data == {}:
+                    data = {Order : True}
+                else :
+                    data[Order] = True
+                schedule_on_dict[fence] = data
     return schedule_on_dict
 
 
@@ -240,7 +260,7 @@ def replot(alias, URL, Addtime):
         "add_time":"",
         "fence": {}
         }
-    print("REPLOT")
+    # print("REPLOT")
     IMGpath = "static/alias_pict/"+str(alias)+".jpg"
     data["alias"]=alias
     data["viedo_url"]=URL

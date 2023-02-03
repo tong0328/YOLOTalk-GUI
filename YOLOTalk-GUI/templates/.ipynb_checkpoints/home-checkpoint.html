@@ -1,259 +1,213 @@
-<html>
-    <title>YOLOTalk Home</title>
-    <head>
+<!-- 宣告我們要套用模板 -->
+{% extends "base.html" %}
     
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-      <link rel="preconnect" href="https://fonts.googleapis.com">
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link rel="preconnect" href="https://fonts.googleapis.com">
-      <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500&family=Open+Sans:ital,wght@1,600&display=swap" rel="stylesheet">
+{% block title %} YOLOTalk Home{% endblock %}
     
-      <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
-      <script src="https://kit.fontawesome.com/8fe09599eb.js" crossorigin="anonymous"></script>
-      <script src="https://code.jquery.com/jquery-3.4.1.js"integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="crossorigin="anonymous"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    </head>
+{% block style %}
+<style>
+    /*    ______________ 字體設定 ______________   */
+    h1,h2,h3,h4,h5,h6{
+        color: rgb(116 109 109);
+    }
 
-    <style>
-        /*    ______________ 字體設定 ______________   */
-        h1,h2,h3,h4,h5,h6{
-            font-family: 'Noto Sans TC', sans-serif;
-            color: rgb(116 109 109);
-        }
+    /*    ______________ 照片設定  不要爆掉 ______________   */
+    img{
+        max-width: 100%;
+    }
+    /*    ______________ 按鈕設定 ______________   */
+    .btn{
+        background-color: #b1d3f5;
+        color: rgb(116 109 109);
+        font-size: 20px;
+        margin-top: -3px;
+        text-align: right;
+    }
 
-        p,a,input,label,textarea,span,ul,li{
-            font-family: 'Open Sans TC', sans-serif;
-        }
-        /*    ______________ 照片設定  不要爆掉 ______________   */
-        img{
-            max-width: 100%;
-        }
-        /*    ______________ 按鈕設定 ______________   */
-        .btn{
-            background-color: #b1d3f5;
-            color: rgb(116 109 109);
-            font-size: 20px;
-            margin-top: -3px;
-            text-align: right;
-        }
+    /*    ______________ 大看板上的選單 ______________   */
+    nav img{
+        width: 200px;
+    }
+    header li{
+        margin: 0 15px;
+        font-weight: bold;
+        font-size: 22px;
+    }
+    .dropdown-item {
+        font-weight: bold;
+        font-size: 18px;
+    }
+    /*    ______________ 大看板 ______________   */
+    #intro .jumbotron{
+        height:84vh;
+        padding: 200px 500px; 
+    }
+    #intro .container-md {
+        position: relative;     
+        top: 40%;
+        transform: translateY(-50%);
+        padding-top: 10px ;
+        padding-left: 5px ; 
+        padding-right: 5px ;
+        padding-bottom: 1px ;
 
-        /*    ______________ 大看板上的選單 ______________   */
-        nav img{
-            width: 200px;
-        }
-        header li{
-            margin: 0 15px;
-            font-weight: bold;
-            font-size: 22px;
-        }
-        /*    ______________ 大看板 ______________   */
-        #intro .jumbotron{
-            height:84vh;
-            padding: 200px 500px; 
-        }
-        #intro .container-md {
-            position: relative;     
-            top: 40%;
-            transform: translateY(-50%);
-            padding-top: 10px ;
-            padding-left: 5px ; 
-            padding-right: 5px ;
-            padding-bottom: 1px ;
-            display: none;
-            border-style: solid;
-            border-color: rgb(116, 109, 109);
-            border-radius: 20px;
-            border-width: 5px;
-            background-color: #b1d3f5;
-        }
-        #intro .justify-content-between {
-            margin-left: 20px;
-            margin-bottom: 50px;
-        }
-        #intro #middle {
-            margin-top: 20px;
-        }
-        #intro .justify-content-center h4{
-            font-size: 15px;
-            margin: 24px 0px;
-        }
-        #intro .justify-content-center input{
-            margin: 18px 0px;
-            width: 100%;
-            font-size: 14px;
-            background-color: rgb(255, 255, 255); 
-            border-color: rgb(68, 70, 69);
-            color: black;
-        }
-        #intro .justify-content-end input{
-            margin-right: 0px;
-            font-size: 15px;
-            background-color: rgb(255, 255, 255); 
-            border-color: rgb(68, 70, 69);
-            border-radius: 5px;
-            color: black;
-        }
-    </style>
+        border-style: solid;
+        border-color: rgb(116, 109, 109);
+        border-radius: 20px;
+        border-width: 5px;
+        background-color: #b1d3f5;
+    }
+    #intro .justify-content-between {
+        margin-left: 20px;
+        margin-bottom: 50px;
+    }
+    #intro #middle {
+        margin-top: 20px;
+    }
+    #intro .justify-content-center h4{
+        font-size: 24px;
+        margin: 24px 25px;
+    }
+    #intro .justify-content-center input{
+        margin: 18px 0px;
+        width: 100%;
+        font-size: 14px;
+        background-color: rgb(255, 255, 255); 
+        border-color: rgb(68, 70, 69);
+        color: black;
+    }
+    #intro .justify-content-end input{
+        margin-right: 0px;
+        font-size: 15px;
+        background-color: rgb(255, 255, 255); 
+        border-color: rgb(68, 70, 69);
+        border-radius: 5px;
+        color: black;
+    }
 
-    <script>
-        function customizeWindowEvent() {
-            var popup_window = document.getElementById("input");
-            popup_window.style.display = "block";
-        }
-        function display_off() {
-            var popup_window = document.getElementById("input");
-            popup_window.style.display = "none";
-        }
-        function Open_IMG() { 
-            var formElement = document.getElementById("rtsp");
-            var camera = formElement[0].value;
-            var URL = formElement[1].value;
-            document.getElementById(camera).src=URL;
-            alert('新增成功,\n '+camera+' 號攝影機已經串流下列網址: '+URL);  
-        }
-        function successfulSubmit(){
-            //let object = {};
-            rtsp  = document.getElementById("rtsp")[1].value;
-            name  = document.getElementById("rtsp")[2].value;
-           alert( "input URL : "+rtsp+"\ninput name : "+name);
-        }
-        function check(){ 
-            str = rtsp.URL.value;               // input 的URL
-            str = str.match(/rtsp:\/\/.+/); 
+</style>
+{% endblock %}
 
+{% block intro %}
+        
+<section id="intro">
+    <div class="jumbotron" > 
+            <div class="container-md " id="input">   
+                  <div class="col align-self-center"  >
+                      <form id="rtsp" method="POST">
+                            <div class="row justify-content-between" >
+                                <h4>Add new Fence</h4>
+                                <input type="button" class="btn" value="x" onclick="display_off()"> 
+                            </div>
+                            <div class="row justify-content-center" >               
+                                <div class="col-3">
+                                    <h4>RTSP URL:</h4>
+                                </div>
+                                <div class="col-8">
+                                    <input name="URL" type="text" class="form-control" placeholder="Please Enter rtsp URL"  aria-label="With textarea" ></input>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center" >
+                                <div class="col-3">     
+                                    <h4>Fence name:</h4>
+                                </div>
+                                <div class="col-8">
+                                    <input name="area" type="text" class="form-control" placeholder="Please Enter name of fence"  aria-label="With textarea" pattern="[a-zA-Z0-9_]*" title="Fence name only allow a~z、A~Z、0~9、_  "></input>
+                                </div>                                         
+                            </div>
+                            <div class="row justify-content-end">
+                                <div class="col-2">
+                                    <input class="btn btn-primary" type="submit" value="SAVE"  onclick="Open_IMG()"> 
+                                </div>
+                            </div>
+                      </form>
+                  </div>
+            </div>
+    </div>
+</section>
+<!-- 串流成功等待 Modal -->
+<div class="modal fade" id="OpenCV_Wait_Modal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" >
+        <div class="modal-content">
+            <div class="modal-header">
+            <h4 class="modal-title" id="Del_fence_Modal" >System message:</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true" >&times;</span>
+            </div>
+            <div class="modal-body">
+            <h5 id="text" style="font-size: 20px; "> OPENCV 影像串流中，請稍後...</h5>
+            </div>
+        </div>
+    </div>
+</div>
 
-            fetch("../static/Json_Info/camera_info_0943.json")
-            .then(response => {
-                return response.json();
-            })
-            .then(jsondata => console.log(jsondata));
-            if (str == null){ 
-            alert('The RTSP URL is valid. Please check again!'); 
-            return false; 
-            }
-            else{ 
-            alert("你输入的URL有效"); 
-            successfulSubmit(); 
-            } 
-        } 
+<!-- 串流失敗 Modal -->
+<div class="modal fade" id="OpenCV_Fail_Modal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h4 class="modal-title" id="Del_fence_Modal" >System message: </h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true" >&times;</span>
+            </div>
+            <div class="modal-body">
+            <h5 id="text" style="font-size: 20px; "> OpenCV 影像串流失敗, 請重新檢查RTSP網址.</h5>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
 
-        // function replot(){
-        //     $("a#replot_fence").click(function(){
-        //         fence = this.text
-        //         $.post("http://127.0.0.1:5000/replotarea",{
-        //         "vertex"   : "REPLOT",
-        //         "FenceName": fence },
-        //         );
-                
-        //     });
-        // }
+    Show_OpenCV_Fail_Modal = "{{alert}}"
 
-        $(document).ready(function(){
-            $("a#replot_fence").click(function(){
-                fence = this.text
-                FormName = "Form_"+fence
-                document.getElementById(FormName).submit()
-
-            });
+    $(document).ready(function(){
+        $("a#replot_fence").click(function(){
+            fence = this.text
+            FormName = "Form_"+fence
+            document.getElementById(FormName).submit()
         });
-    </script>
 
-    <body>
-<!-- __________________________________________ 上方列表 __________________________________________   -->
-        <header>
-            <div class="Container">
-                <nav class="navbar navbar-expand-lg navbar-light ">
-                    <a class="navbar-brand" href="#">
-                        <img src="static\logo.png">
-                    </a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav mr-auto">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                  Fence
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item"  href="\" >Home</a>
-                                    <form></form>
-                                    {% for name in navs %}
-                                        <a class="dropdown-item" id="replot_fence"  >{{ name }}</a>
+        if (Show_OpenCV_Fail_Modal == "True"){
+            $('#OpenCV_Fail_Modal').modal() 
+            Show_OpenCV_Fail_Modal == "False"
+        }
+    });
 
-                                    <!-- 用來重新導向舊的畫圖頁面，因POST無法啟動render_template -->
-                                        <form method="post" id="Form_{{name}}" >
-                                            <input type="hidden" name="area" value="{{ name }}">
-                                            <input type="hidden" name="URL" value="REPLOT">
-                                        </form>
-                                    <!-- 用來重新導向舊的畫圖頁面，因POST無法啟動render_template -->
 
-                                    {% endfor %}
-                                    <a class="dropdown-item" onclick="customizeWindowEvent()" >Add new rtsp</a>
-                                </div>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="\management">Management</a>
-                            </li>
-                             
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                  Schedule
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+    function customizeWindowEvent() {
+        var popup_window = document.getElementById("input");
+        popup_window.style.display = "block";
+    }
 
-                                    <a class="dropdown-item"  href="\schedule">Fence</a> <form></form>
-                                    <a class="dropdown-item"  >Camera</a>  <form></form>
-                                    <a class="dropdown-item"  >Group</a>  <form></form>
-                                </div>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link " href="\streaming"  >Video</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link " href="\training"  >Training(尚未完成)</a>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-            </div>
-        </header>  
-<!-- __________________________________________ 大看板 __________________________________________   -->
-        <section id="intro">
-            <div class="jumbotron" > 
-                    <div class="container-md " id="input">   
-                          <div class="col align-self-center"  >
-                              <form id="rtsp" method="POST">
-                                    <div class="row justify-content-between" >
-                                        <h4>Add new Fence</h4>
-                                        <input type="button" class="btn" value="x" onclick="display_off()"> 
-                                    </div>
-                                    <div class="row justify-content-center" >               
-                                        <div class="col-3">
-                                            <h4>rtsp URL:</h4>
-                                        </div>
-                                        <div class="col-8">
-                                            <input name="URL" type="text" class="form-control" placeholder="Please Enter rtsp URL" aria-label="With textarea" required></input>
-                                        </div>
-                                    </div>
-                                    <div class="row justify-content-center" >
-                                        <div class="col-3">     
-                                            <h4>Fence name:</h4>
-                                        </div>
-                                        <div class="col-8">
-                                            <input name="area" type="text" class="form-control" placeholder="Please Enter name of fence" aria-label="With textarea" required></input>
-                                        </div>                                         
-                                    </div>
-                                    <div class="row justify-content-end">
-                                        <div class="col-3">
-                                            <input class="btn btn-primary" type="submit" value="SAVE"  onclick="successfulSubmit()"> 
-                                        </div>
-                                    </div>
-                              </form>
-                          </div>
-                    </div>
-            </div>
-        </section>
-    </body> 
-</html>
+
+    function display_off() {
+        var popup_window = document.getElementById("input");
+        popup_window.style.display = "none";
+    }
+
+    
+    function Open_IMG() { 
+        var formElement = document.getElementById("rtsp");
+        var camera = formElement[0].value;
+        var URL = formElement[1].value;
+        $("#OpenCV_Wait_Modal").modal()
+        // alert('新增成功,\n '+camera+' 號攝影機已經串流下列網址: '+URL);  
+    }
+
+
+    function successfulSubmit(){
+
+        rtsp  = document.getElementById("rtsp")[1].value;
+        name  = document.getElementById("rtsp")[2].value;
+        alert( "123321測試測試input URL : "+rtsp+"\ninput name : "+name);
+    }
+
+
+    function show_OpenCV_Fail_Modal(){ 
+        $('#OpenCV_Fail_Modal').modal() 
+    } 
+
+
+</script>
+{% endblock %}

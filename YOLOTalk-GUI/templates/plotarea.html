@@ -200,13 +200,18 @@
         // 若名字為空，則給予預設格式
         if (FenceName == ""){
             let date = new Date();
-            dataValues = String(date.getMonth() + 1) + "_" + String(date.getDate()) + "_" +  String(date.getHours()) + ":" +  String(date.getMinutes()) + ":" + String(date.getSeconds()) 
+            if (date.getMonth() + 1 <10){
+                month = String(date.getFullYear()) + "0" + (date.getMonth() + 1)
+            }
+            else{
+                month = String(date.getFullYear()) + (date.getMonth() + 1)
+            }
+            dataValues = month + String(date.getDate()) + "_" +  String(date.getHours()) + ":" +  String(date.getMinutes()) + ":" + String(date.getSeconds()) 
             FenceName = dataValues
         }
 
         FenceNameList.push(FenceName)                          // 加入NameList
-	alert("data {{data}}")
-	alert("postURL {{postURL}}")
+
         $.post("{{postURL}}",   
             { "vertex"   : vertex,
               "alias":"{{name}}",

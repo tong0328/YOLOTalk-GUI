@@ -1,5 +1,6 @@
 <html>
     <title>{% block title %}YOLOTalk Home{% endblock %}</title>
+    <link rel="shortcut icon" href="#" />
     <head>
       <!-- jQuery 連結 -->
       <script src="https://code.jquery.com/jquery-3.4.1.js"integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="crossorigin="anonymous"></script>
@@ -92,7 +93,6 @@
     </style>
     {% endblock %}
 
-    {% block header %}
     <body>
         <!--  上方列表  -->
         <header>
@@ -127,18 +127,16 @@
                             <li class="nav-item"><a class="nav-link" href="\management">Management</a></li>
                             <li class="nav-item dropdown"><a class="nav-link" href="\schedule" >Schedule</a></li>
                             <li class="nav-item"><a class="nav-link" href="\streaming">Video</a></li>
-                            <li class="nav-item"><a class="nav-link" href="..\files">Files</a></li>
-                            <!-- <li class="nav-item"><a class="nav-link" href="\training">Training(製作中)</a> -->
+                            <li class="nav-item"><a class="nav-link" href="\record">Files(製作中)</a>
                             </li>
                         </ul>
                     </div>
                 </nav>
             </div>
         </header>
-        {% endblock %} 
         <!--  大看板    --> 
         {% block intro %}              
-                <section id="intro">
+                <!-- <section id="intro">
                     <div class="jumbotron" > 
                             <div class="container-md " id="input">   
                                 <div class="col align-self-center"  >
@@ -172,7 +170,7 @@
                                 </div>
                             </div>
                     </div>
-                </section>
+                </section> -->
         {% endblock %}   
     </body> 
 

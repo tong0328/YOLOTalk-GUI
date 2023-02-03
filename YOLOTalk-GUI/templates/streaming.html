@@ -168,19 +168,23 @@ header li{
             document.getElementById(FormName).submit()
         });
     });
-    var perPage = 4;                                                    // items in one page 
-    var alias_list_len = Number("{{length}}");                          // how many video should be show
-    var totalPage   = Math.ceil(alias_list_len / perPage)               // total pages now 
-    var nowPageNum     = parseInt(alias_list_len % perPage)                // how many alias in page (0~4)
-    var maxPageNum  = 3
 
-    var All_li = document.getElementById('Page_nav').getElementsByTagName("li")     // li
-    var All_ul = document.getElementById('Page_nav')                                // ul
+    var perPage = 4;                                                // items in one page 
+    var alias_list_len = Number("{{length}}");                      // how many video should be show
+    var totalPage = Math.ceil(alias_list_len / perPage)             // total pages now 
+    var nowPageNum = parseInt(alias_list_len % perPage)             // how many alias in page (0~4)
+    var maxPageNum = 1
+
+    var All_li = document.getElementById('Page_nav').getElementsByTagName("li") // li
+    var All_ul = document.getElementById('Page_nav')                            // ul
     var nowPage = document.getElementsByClassName("page-item active")[0];
     change_alias_title(nowPage.id)
 
-    if (nowPageNum >= maxPageNum){
+    // console.log("alias_list_len:", alias_list_len)
+    // console.log("totalPage:", totalPage)
+    // console.log("nowPageNum:", nowPageNum)
 
+    if (nowPageNum >= maxPageNum){
         add();
         totalPage += 1 ;
     }
@@ -189,19 +193,19 @@ header li{
         var li = document.createElement("li");          // create li
         var a  = document.createElement("a");           // creare a in li
         var ul  = document.getElementById('Page_nav');
-        var newPageNum =  totalPage + 1 ;
-        
+        var newPageNum =  totalPage ;
+        // console.log("newPageNum:", newPageNum)
         // add new li after last li 
         li.append(document.createTextNode(""));
-        li.setAttribute("id","2");
-        li.setAttribute("class","page-item");
-        li.setAttribute("onclick","clickBtn(this)");
+        li.setAttribute("id", "2");
+        li.setAttribute("class", "page-item");
+        li.setAttribute("onclick", "clickBtn(this)");
         ul.appendChild(li);
 
         // add <a> for new li 
         a.append(document.createTextNode(newPageNum));
-        a.setAttribute("class","page-link");
-        a.setAttribute("href","#");
+        a.setAttribute("class", "page-link");
+        a.setAttribute("href", "#");
         li.append(a);
         
         // move 「>>」 li ,which  id=last  to the last  
@@ -212,7 +216,7 @@ header li{
     function clickBtn(a){
         
         var nowPage = document.getElementsByClassName("page-item active")[0];
-        nowPage.setAttribute("class","page-item");
+        nowPage.setAttribute("class", "page-item");
 
         if( a.id == "first" ){
             var newPage = document.getElementById(Number(nowPage.id) - 1);
@@ -220,21 +224,19 @@ header li{
             if ((newPage == null) || (newPage.id <=0)){
                 newPage = nowPage
             }
-            newPage.setAttribute("class","page-item active");
+            newPage.setAttribute("class", "page-item active");
             move(newPage.id )
         }
-
         else if(a.id == "last" ){
             var newPage = document.getElementById(Number(nowPage.id) + 1);
             if ((newPage == null) || (newPage.id >totalPage)){
                 newPage = nowPage
             }
-            newPage.setAttribute("class","page-item active");
+            newPage.setAttribute("class", "page-item active");
             move(newPage.id)
         }
-
         else {
-            a.setAttribute("class","page-item active");
+            a.setAttribute("class", "page-item active");
             move(a.id)
         }
     }
@@ -287,7 +289,7 @@ header li{
         for(i=1; i<alias_list.length ;i+=2){
             
             str = alias_list[i].replace(".jpg"," ")
-            console.log(str)
+            // console.log(str)
             titles.push(str)
         }
         title1.innerText  = titles[num1]
