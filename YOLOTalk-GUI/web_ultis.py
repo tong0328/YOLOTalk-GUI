@@ -207,6 +207,7 @@ def gen_frames(yolo):
 
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+        time.sleep(1/30)    # make sure won't use too many bandwidth
 
 
 def time_interval(yolo):
